@@ -1,0 +1,54 @@
+
+FROM python:3.11.3-slim-buster
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+
+
+ENV APP_HOME=/app
+RUN mkdir $APP_HOME
+RUN mkdir -p $APP_HOME/django
+WORKDIR $APP_HOME/django
+RUN mkdir -p $APP_HOME/staticfiles
+RUN mkdir -p $APP_HOME/mediafiles
+
+
+RUN apt-get update \
+  && apt-get install -y build-essential \
+  && apt-get install -y libpq-dev libjpeg-dev\
+  && apt-get install -y gettext \
+  && apt-get -y install netcat gcc postgresql \
+  # && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+
+# RUN apt-get install libffi-dev
+
+
+RUN pip3 install --upgrade pip
+RUN pip3 install wheel
+
+COPY ./requirements.txt $APP_HOME/requirements.txt 
+
+RUN pip3 install -r $APP_HOME/requirements.txt
+
+
+COPY ./entrypoint.dev.sh $APP_HOME/entrypoint.dev.sh
+# remove ms carriage return
+RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.dev.sh
+RUN chmod +x $APP_HOME/entrypoint.dev.sh
+
+COPY ./start.dev.sh $APP_HOME/start.dev.sh
+# remove ms carriage return
+RUN sed -i 's/\r$//g' $APP_HOME/start.dev.sh
+RUN chmod +x $APP_HOME/start.dev.sh
+
+
+# for debugging
+# TODO remove below and add entry point
+RUN echo "cwd is..."
+RUN ls ../ | cat
+RUN pwd
+
+
+# ENTRYPOINT ["/app/entrypoint.dev.sh"]

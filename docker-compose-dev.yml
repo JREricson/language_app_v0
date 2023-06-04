@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  django_be:
+    build:
+      context: ./django
+      dockerfile: ./Dockerfile.dev
+    env_file:
+      - ./.env.dev
+    # command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    # command: ls -hal 
+    command: >
+      sh -c " python manage.py migrate --no-input &&
+      python manage.py runserver 0.0.0.0:8000"
+    # command: /start
+
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - language-app
+
+  db:
+    image: postgres:15.3-alpine
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev.db
+    networks:
+      - language-app
+
+
+  # nginx:
+  #   build: ./nginx_dev
+  #   ports:
+  #     - 1337:80
+  #   volumes:
+  #     - static_volume:/mainsite/staticfiles
+  #     - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  #   depends_on:
+  #     - web
+
+volumes:
+  postgres_data:
+  static_volume: 
+  media_volume:
+
+networks:
+  language-app:
+
+  # # certs:
+  # html:
+  # vhost: # acme:
