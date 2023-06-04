@@ -42,7 +42,6 @@ app-shell:
 	docker  exec -it $(PARENT_DIR)_$(DJANGO_SERVICE)_1 sh
 
 	
-
 volume:
 	docker volume inspect $(PARENT_DIR)_postgres_data
 

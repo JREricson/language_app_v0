@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+dcMigrate(){
+    docker-compose -f docker-compose-dev.yml exec django_be python3 manage.py migrate "$@"
+ }
+
+dcAppExec(){
+  docker-compose -f docker-compose-dev.yml exec django_be "$@"
+}

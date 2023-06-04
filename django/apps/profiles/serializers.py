@@ -28,7 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "profile_photo",
             "about_me",
             "country",
-            "native_language",
+            # "native_language",
         ]
 
     def get_full_name(self, obj):
@@ -46,6 +46,6 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "profile_photo",
             "about_me",
             "country",
-            "language_fluency",
+            # "language_fluency",
             "native_language",
         ]

@@ -44,26 +44,26 @@ class Profile(TimeStampedUUIDModel):
         null=False,
     )
 
-    language_fluency = models.CharField(
-        verbose_name=_("Language Fluency"),
-        choices=LanguageFluency.choices,
-        default=LanguageFluency.NONE,
-        max_length=19,
-        blank=False,
-        null=False,
-    )
+    # language_fluency = models.CharField(
+    #     verbose_name=_("Language Fluency"),
+    #     choices=LanguageFluency.choices,
+    #     default=LanguageFluency.NONE,
+    #     max_length=19,
+    #     blank=False,
+    #     null=False,
+    # )
 
     country = CountryField(
         verbose_name=_("Current Country"), default="USA", blank=False, null=False
     )
 
-    native_language = models.CharField(
-        verbose_name=_("Native Language"),
-        max_length=7,
-        choices=LANGUAGES,
-        blank=False,
-        null=False,
-    )
+    # native_language = models.CharField(
+    #     verbose_name=_("Native Language"),
+    #     max_length=7,
+    #     choices=LANGUAGES,
+    #     blank=False,
+    #     null=False,
+    # )
 
     def __str__(self):
         return f"{self.user.username}'s profile"
