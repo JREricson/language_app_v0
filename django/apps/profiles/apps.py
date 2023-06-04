@@ -5,5 +5,6 @@ class ProfilesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.profiles"
 
-    def ready(self):
-        from apps.profiles import signals
+    # TODO clean up or remove line
+    # def ready(self):
+    #     from apps.profiles import signals

@@ -1,10 +1,10 @@
+from django_countries.fields import CountryField
+
+from apps.common.models import TimeStampedUUIDModel
+from django.conf.global_settings import LANGUAGES
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_countries.fields import CountryField
-from django.conf.global_settings import LANGUAGES
-
-from apps.common.models import TimeStampedUUIDModel
 
 User = get_user_model()
 
@@ -56,7 +56,6 @@ class Profile(TimeStampedUUIDModel):
     country = CountryField(
         verbose_name=_("Current Country"), default="USA", blank=False, null=False
     )
-
 
     native_language = models.CharField(
         verbose_name=_("Native Language"),

@@ -1,7 +1,8 @@
-from django.contrib.auth import get_user_model
 from django_countries.serializer_fields import CountryField
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -11,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     country = CountryField(source="profile.country")
     spanish_fluency = serializers.CharField(source="profile.spanish_fluency")
     native_language = serializers.CharField(source="profile.native_language")
-    
+
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     full_name = serializers.SerializerMethodField(source="get_full_name")
@@ -26,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "full_name",
             "profile_photo",
-            "country",           
+            "country",
         ]
 
     def get_first_name(self, obj):

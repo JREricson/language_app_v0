@@ -1,11 +1,10 @@
-from datetime import timedelta
-from pathlib import Path
 import logging
 import logging.config
+import os
+from datetime import timedelta
+from pathlib import Path
 
 from django.utils.log import DEFAULT_LOGGING
-import os
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,11 +38,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "django_countries",
-
     "djoser",
     "rest_framework_simplejwt",
-    
-
     # local
     "apps.common",
     "apps.users",
@@ -130,7 +126,7 @@ MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 
 REST_FRAMEWORK = {
@@ -145,7 +141,9 @@ SIMPLE_JWT = {
         "Bearer",
         "JWT",
     ),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120), #TODO change to shorter time, 15 min?
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=120
+    ),  # TODO change to shorter time, 15 min?
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "SIGNING_KEY": os.environ.get("SIGNING_KEY"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -171,11 +169,6 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }
-
-import logging
-import logging.config
-
-from django.utils.log import DEFAULT_LOGGING
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +205,11 @@ logging.config.dictConfig(
             "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
         "loggers": {
-            "": {"level": "INFO", "handlers": ["console", "file_info","file_debug"], "propagate": False},
+            "": {
+                "level": "INFO",
+                "handlers": ["console", "file_info", "file_debug"],
+                "propagate": False,
+            },
             "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
             "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
         },
@@ -232,10 +229,8 @@ DATABASES = {
 }
 
 
-
-
 # EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-EMAIL_BACKEND ="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_USE_TLS = True
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
@@ -244,5 +239,3 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 DOMAIN = os.environ.get("DOMAIN")
 SITE_NAME = "Language App"
-
-

@@ -1,8 +1,9 @@
-from rest_framework import generics, permissions, status
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .exceptions import InvalidCredentialsForProfileException, ProfileNotFoundException
+from .exceptions import (InvalidCredentialsForProfileException,
+                         ProfileNotFoundException)
 from .models import Profile
 from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
@@ -41,5 +42,5 @@ class UpdateProfileAPIView(APIView):
         )
 
         serializer.is_valid()
-        serializer.save() #TODO will throw Assertion error if data is invalid
+        serializer.save()  # TODO will throw Assertion error if data is invalid
         return Response(serializer.data, status=status.HTTP_200_OK)
