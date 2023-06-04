@@ -10,7 +10,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     profile_photo = serializers.ImageField(source="profile.profile_photo")
     country = CountryField(source="profile.country")
-    spanish_fluency = serializers.CharField(source="profile.spanish_fluency")
+    language_fluency = serializers.CharField(source="profile.spanish_fluency")
     native_language = serializers.CharField(source="profile.native_language")
 
     first_name = serializers.SerializerMethodField()

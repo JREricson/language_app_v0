@@ -59,7 +59,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "spanish_app.urls"
+ROOT_URLCONF = "language_app.urls"
 
 TEMPLATES = [
     {
@@ -77,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "spanish_app.wsgi.application"
+WSGI_APPLICATION = "language_app.wsgi.application"
 
 
 # Password validation

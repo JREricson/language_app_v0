@@ -44,8 +44,8 @@ class Profile(TimeStampedUUIDModel):
         null=False,
     )
 
-    spanish_fluency = models.CharField(
-        verbose_name=_("Spanish Fluency"),
+    language_fluency = models.CharField(
+        verbose_name=_("Language Fluency"),
         choices=LanguageFluency.choices,
         default=LanguageFluency.NONE,
         max_length=19,

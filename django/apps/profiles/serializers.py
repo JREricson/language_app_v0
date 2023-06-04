@@ -46,6 +46,6 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "profile_photo",
             "about_me",
             "country",
-            "spanish_fluency",
+            "language_fluency",
             "native_language",
         ]
