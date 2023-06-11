@@ -237,9 +237,10 @@ DATABASES = {
     }
 }
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")
-CELERY_TIMEZONE = "UTC"
+#celery settings
+result_backend = os.environ.get("CELERY_BROKER")
+result_backend = os.environ.get("CELERY_BACKEND")
+timezone = "UTC"
 
 
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
