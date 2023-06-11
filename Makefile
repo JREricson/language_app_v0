@@ -20,8 +20,11 @@ up:
 down:
 	docker-compose -f $(COMPOSE_FILE) down
 
-show-logs:
+logs:
 	docker-compose -f $(COMPOSE_FILE) logs
+
+logs-f:
+	docker-compose -f $(COMPOSE_FILE) logs -f
 
 migrate:
 	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py migrate
@@ -29,7 +32,7 @@ migrate:
 makemigrations:
 	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py makemigrations
 
-superuser:
+superuser-make:
 	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py createsuperuser
 
 collectstatic:
@@ -41,12 +44,11 @@ down-v:
 app-shell:
 	docker  exec -it $(PARENT_DIR)_$(DJANGO_SERVICE)_1 sh
 
-	
 volume:
 	docker volume inspect $(PARENT_DIR)_postgres_data
 
-enter-db:
-	docker-compose -f $(COMPOSE_FILE) exec postgres-db psql --username=admin --dbname=estate
+db-psql:
+	docker-compose -f $(COMPOSE_FILE) exec db psql --username=postgres --dbname=postgres
 
 test:
 	docker-compose -f $(COMPOSE_FILE) exec django_be pytest -p no:warnings --cov=.
@@ -74,3 +76,6 @@ isort-diff:
 
 isort:
 	docker-compose -f $(COMPOSE_FILE) exec django_be isort . --skip env --skip migrations
+
+schema-make:
+	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py spectacular --file schema.yaml

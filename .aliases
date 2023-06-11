@@ -8,3 +8,7 @@ dcMigrate(){
 dcAppExec(){
   docker-compose -f docker-compose-dev.yml exec django_be "$@"
 }
+
+dcAppMan(){
+  docker-compose -f docker-compose-dev.yml exec django_be python3 manage.py "$@"
+}

@@ -8,16 +8,14 @@ ENV PYTHONUNBUFFERED 1
 
 ENV APP_HOME=/app
 RUN mkdir $APP_HOME
-RUN mkdir -p $APP_HOME/django
-WORKDIR $APP_HOME/django
-RUN mkdir -p $APP_HOME/staticfiles
-RUN mkdir -p $APP_HOME/mediafiles
+RUN mkdir $APP_HOME/staticfiles
+WORKDIR $APP_HOME
 
 
 RUN apt-get update \
   && apt-get install -y build-essential \
-  && apt-get install -y libpq-dev libjpeg-dev\
-  && apt-get install -y gettext \
+  && apt-get install -y libpq-dev libjpeg-dev
+RUN apt-get install -y gettext \
   && apt-get -y install netcat gcc postgresql \
   # && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
@@ -28,27 +26,107 @@ RUN apt-get update \
 RUN pip3 install --upgrade pip
 RUN pip3 install wheel
 
-COPY ./requirements.txt $APP_HOME/requirements.txt 
+COPY ./requirements.txt /app/requirements.txt 
 
-RUN pip3 install -r $APP_HOME/requirements.txt
+RUN pip3 install -r requirements.txt
 
 
-COPY ./entrypoint.dev.sh $APP_HOME/entrypoint.dev.sh
+COPY ./entrypoint.dev.sh entrypoint.dev.sh
 # remove ms carriage return
-RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.dev.sh
-RUN chmod +x $APP_HOME/entrypoint.dev.sh
+RUN pwd
+RUN ls -ha
 
-COPY ./start.dev.sh $APP_HOME/start.dev.sh
-# remove ms carriage return
-RUN sed -i 's/\r$//g' $APP_HOME/start.dev.sh
-RUN chmod +x $APP_HOME/start.dev.sh
+# remove ms carriage return and add permissions
+RUN sed -i 's/\r$//g' /app/entrypoint.dev.sh && chmod +x /app/entrypoint.dev.sh
+
+
+COPY ./start-django.dev.sh start-django.dev.sh
+RUN sed -i 's/\r$//g' /app/start-django.dev.sh && chmod +x /app/start-django.dev.sh
+
+COPY ./celery/worker/start-celeryworker.sh start-celeryworker.sh
+RUN sed -i 's/\r$//g' /app/start-celeryworker.sh && chmod +x /app/start-celeryworker.sh
+
+COPY ./celery/flower/start-flower.sh start-flower.sh
+RUN sed -i 's/\r$//g' /app/start-flower.sh && chmod +x /app/start-flower.sh
+
+
+# COPY ./docker/local/django/celery/worker/start /start-celeryworker
+# RUN sed -i 's/\r$//g' /start-celeryworker
+# RUN chmod +x /start-celeryworker
+
+# COPY ./docker/local/django/celery/flower/start /start-flower
+# RUN sed -i 's/\r$//g' /start-flower
+# RUN chmod +x /start-flower
 
 
 # for debugging
 # TODO remove below and add entry point
 RUN echo "cwd is..."
-RUN ls ../ | cat
 RUN pwd
+RUN pwd
+RUN ls  | cat
+RUN pwd
+RUN cp "/app/entrypoint.dev.sh" "/entrypoint"
+RUN cp "/app/start-django.dev.sh" "/start-django"
+RUN cp "/app/start-celeryworker.sh" "/start-celeryworker"
+RUN cp "/app/start-flower.sh" "/start-flower"
+WORKDIR $APP_HOME/django
+
+ENTRYPOINT ["/entrypoint"]
 
 
-# ENTRYPOINT ["/app/entrypoint.dev.sh"]
+
+
+
+# FROM python:3.11.3-slim-buster
+
+# ENV PYTHONDONTWRITEBYTECODE 1
+# ENV PYTHONUNBUFFERED 1
+
+
+
+# ENV APP_HOME=/app
+# RUN mkdir $APP_HOME
+# RUN mkdir -p $APP_HOME/django
+# WORKDIR $APP_HOME/django
+# RUN mkdir -p $APP_HOME/staticfiles
+# RUN mkdir -p $APP_HOME/mediafiles
+
+
+# RUN apt-get update \
+#   && apt-get install -y build-essential \
+#   && apt-get install -y libpq-dev libjpeg-dev\
+#   && apt-get install -y gettext \
+#   && apt-get -y install netcat gcc postgresql \
+#   # && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+#   && rm -rf /var/lib/apt/lists/*
+
+# # RUN apt-get install libffi-dev
+
+
+# RUN pip3 install --upgrade pip
+# RUN pip3 install wheel
+
+# COPY ./requirements.txt $APP_HOME/requirements.txt 
+
+# RUN pip3 install -r $APP_HOME/requirements.txt
+
+
+# COPY ./entrypoint.dev.sh entrypoint.dev.sh
+# # remove ms carriage return
+# RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.dev.sh && chmod +x /entrypoint.dev.sh
+
+
+# COPY ./start.dev.sh $APP_HOME/start.dev.sh
+# # remove ms carriage return
+# RUN chmod +x $APP_HOME/start.dev.sh && sed -i 's/\r$//g' $APP_HOME/start.dev.sh
+
+
+# # for debugging
+# # TODO remove below and add entry point
+# RUN echo "cwd is..."
+# RUN ls ../ | cat
+# RUN pwd
+
+
+# ENTRYPOINT ["entrypoint.dev.sh"]

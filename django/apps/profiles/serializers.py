@@ -10,7 +10,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source="user.last_name")
     email = serializers.EmailField(source="user.email")
     date_joined = serializers.DateTimeField(source="user.date_joined")
-    full_name = serializers.SerializerMethodField(read_only=True)
+    # full_name = serializers.SerializerMethodField(read_only=True)
     country = CountryField(
         name_only=True
     )  # name_only gives county name instead of country code
@@ -21,7 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
-            "full_name",
+            # "full_name",
             "email",
             "date_joined",
             "id",
@@ -31,10 +31,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             # "native_language",
         ]
 
-    def get_full_name(self, obj):
-        first_name = obj.user.first_name.title()
-        last_name = obj.user.last_name.title()
-        return f"{first_name} {last_name}"
+    # def get_full_name(self, obj):
+    #     first_name = obj.user.first_name.title()
+    #     last_name = obj.user.last_name.title()
+    #     return f"{first_name} {last_name}"
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
@@ -47,5 +47,5 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "about_me",
             "country",
             # "language_fluency",
-            "native_language",
+            # "native_language",
         ]

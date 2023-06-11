@@ -141,6 +141,8 @@ GitHub.sublime-settings
 # repository additions
 notes.txt
 todo.txt
-
+staticfiles/
+mediafiles/
+schema
 
 
