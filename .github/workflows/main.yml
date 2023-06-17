@@ -1,6 +1,14 @@
 name: Continuous Integration
 
-on: [push]
+on: 
+  push:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - stage
+
+
 
 env:
   WEB_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/web
@@ -80,7 +88,7 @@ jobs:
         # -T flag in docker disabbles TTL
       # - name: run tests
       #   run: |
-      #     docker-compose -f docker-compose.ci.yml exec -T django_be pytest 
+      #     docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings
 
       - name: stop containers
         run: |
