@@ -68,10 +68,12 @@ jobs:
         run: |
           docker push ${{ env.WEB_IMAGE }}
           docker push ${{ env.NGINX_IMAGE }}
-
+      - name: docker-compose up 
+        run: |
+          docker-compose -f docker-compose.ci.yml up -d
       - name: run tests
         run: |
-         pytest -p no:warnings --cov=.
+          docker-compose -f docker-compose.ci.yml exec django_be pytest -p no:warnings --cov=.
       - name: run fornatting tests
         run: |
           echo "stub"
