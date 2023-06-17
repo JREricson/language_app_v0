@@ -6,7 +6,7 @@ services:
       context: ./django
       dockerfile: ./Dockerfile.dev
     env_file:
-      - ./.env.dev
+      - ./.env
     # command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     # command: ls -hal 
     # command: >
