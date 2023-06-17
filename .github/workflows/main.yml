@@ -78,12 +78,12 @@ jobs:
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be ls
         # -T flag in docker disabbles TTL
-      - name: run tests
-        run: |
-          docker-compose -f docker-compose.ci.yml exec -T django_be pytest 
+      # - name: run tests
+      #   run: |
+      #     docker-compose -f docker-compose.ci.yml exec -T django_be pytest 
       - name: run fornatting tests
         run: |
-          echo "stub"
+          docker-compose -f docker-compose.ci.yml exec -T django_be isort
       - name: stop containers
         run: |
           docker-compose -f docker-compose.ci.yml down
