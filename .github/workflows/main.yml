@@ -74,6 +74,9 @@ jobs:
       - name: show logs
         run: |
           docker-compose -f docker-compose.ci.yml logs
+      - name: show files -  dlete test later
+        run: |
+        docker-compose -f docker-compose.ci.yml exec -T django_be ls
       - name: run tests
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings --cov=.
