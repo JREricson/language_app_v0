@@ -71,4 +71,7 @@ jobs:
 
       - name: run tests
         run: |
-          docker-compose -f docker-compose.ci.yml exec django_be pytest -p no:warnings --cov=.
+         pytest -p no:warnings --cov=.
+      - name: run fornatting tests
+        run: |
+          echo "stub"
