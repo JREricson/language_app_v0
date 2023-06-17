@@ -38,6 +38,17 @@ jobs:
           echo "CELERY_BROKER=${{ secrets.CELERY_BROKER }}" >> .env
           echo "CELERY_BACKEND=${{ secrets.CELERY_BACKEND }}" >> .env
 
+
+
+
+      - name: Add environment variables to .env.db
+        run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env.db
+
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env.db
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env.db
+
+
       - name: Set environment variables
         run: |
           echo "WEB_IMAGE=$(echo ${{env.WEB_IMAGE}} )" >> $GITHUB_ENV

@@ -6,7 +6,7 @@ services:
       context: ./django
       dockerfile: ./Dockerfile.dev
     env_file:
-      - ./.env
+      - ./.env.dev
     # command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     # command: ls -hal 
     # command: >
@@ -19,6 +19,8 @@ services:
       - .:/app
       - static_volume:/app/django/staticfiles
       - media_volume:/app/django/mediafiles
+    # ports:
+    #   - "8000:8000"
     depends_on:
       - db
     networks:
@@ -33,7 +35,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env.db
+      - ./.env.dev.db
     networks:
       - language-app
 
