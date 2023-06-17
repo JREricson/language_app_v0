@@ -68,3 +68,7 @@ jobs:
         run: |
           docker push ${{ env.WEB_IMAGE }}
           docker push ${{ env.NGINX_IMAGE }}
+
+      - name: run tests
+        run: |
+          docker-compose -f docker-compose.ci.yml exec django_be pytest -p no:warnings --cov=.

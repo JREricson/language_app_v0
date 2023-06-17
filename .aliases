@@ -13,15 +13,26 @@ dcAppMan(){
   docker-compose -f docker-compose.dev.yml exec django_be python3 manage.py "$@"
 }
 
-dcBuildImageOnGithubDev() {
+dcBuildWebImageOnGithubDev() {
   docker build -f ./django/Dockerfile.dev -t ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/web:latest ./django
 
+}
+
+dcBuildNginxImageOnGithubDev() { 
+  cd ./nginx
+  docker build -f ./Dockerfile -t ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/nginx:latest .
+  cd -
 }
 
 dcLoginGithub() {
   docker login ghcr.io -u "$GH_USERNAME" -p "$GH_TOKEN"
 }
 
-dcPushGithub(){
+dcPushWebGithub(){
   docker push ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/web:latest
+}
+
+
+dcPushNginxGithub(){
+  docker push ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/nginx:latest
 }
