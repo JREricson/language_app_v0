@@ -68,7 +68,7 @@ services:
       volumes:
           - .:/app
       env_file:
-          - .env.dev
+          - .env
       depends_on:
           - redis
           - db
@@ -83,7 +83,7 @@ services:
       volumes:
           - .:/app
       env_file:
-          - .env.dev
+          - .env
       ports:
           - "5557:5555"
       depends_on:
