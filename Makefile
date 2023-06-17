@@ -2,7 +2,7 @@ ifneq (,$(wildcard ./.env.dev))
 include .env.dev
 export
 ENV_FILE_PARAM = --env-file .env.dev
-COMPOSE_FILE  = docker-compose-dev.yml
+COMPOSE_FILE  = docker-compose.dev.yml
 PARENT_DIR = language_app_v0-1
 DJANGO_SERVICE = django_be
 
