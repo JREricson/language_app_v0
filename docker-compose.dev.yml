@@ -97,11 +97,11 @@ services:
   react_fe:
     build: 
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: docker/local/Dockerfile.dev
     restart: on-failure
     volumes:
-      - ./frontend:/app/frontend
-      - ./frontend/node_modules
+      - ./frontend:/app
+      - /app/node_modules
     networks:
       - language-app
     depends_on:
