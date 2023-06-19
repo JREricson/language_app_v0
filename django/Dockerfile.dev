@@ -1,0 +1,44 @@
+
+FROM python:3.11.3-slim-buster
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+
+
+ENV APP_HOME=/app
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+WORKDIR $APP_HOME
+
+RUN apt-get update \
+  && apt-get install -y build-essential \
+  && apt-get install -y libpq-dev libjpeg-dev \
+  && apt-get install -y gettext \
+  && apt-get -y install netcat gcc postgresql \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --upgrade pip
+RUN pip3 install wheel
+
+COPY ./requirements.txt /app/requirements.txt 
+
+RUN pip3 install -r requirements.txt
+
+COPY ./entrypoint.dev.sh /entrypoint
+
+# remove carriage return and add permissions
+RUN sed -i 's/\r$//g' /entrypoint && chmod +x /entrypoint
+
+COPY ./start-django.dev.sh /start-django
+RUN sed -i 's/\r$//g' /start-django && chmod +x /start-django
+
+COPY ./celery/worker/start-celeryworker.sh /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker && chmod +x /start-celeryworker
+
+COPY ./celery/flower/start-flower.sh /start-flower
+RUN sed -i 's/\r$//g' /start-flower && chmod +x /start-flower
+
+WORKDIR $APP_HOME/django
+ENTRYPOINT ["/entrypoint"]
