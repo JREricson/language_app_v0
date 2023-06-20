@@ -1,12 +1,38 @@
-import React from 'react';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomePage from "./pages/HomePage"
+// import PropertiesPage from "./pages/PropertiesPage";
 
-const App= ()=> {
+const App = () => {
   return (
     <div className="App">
-     <h1>Simple language study Application</h1>
-     <p>work in progress</p>
+      <h1>LanguaVersity</h1>
+
+      <>
+        <Router>
+          <Header />
+          <main className="py-3">
+            <Routes>
+              <Route path="/" element={<HomePage />}></Route>
+            </Routes>
+            <Routes>
+              {/* <Route
+							path="/properties"
+							element={<PropertiesPage />}
+						></Route> */}
+            </Routes>
+          </main>
+          <Footer />
+        </Router>
+        {/* <ToastContainer /> */}
+      </>
+
     </div>
+
   );
-}
+};
 
 export default App;
