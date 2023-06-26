@@ -8,6 +8,7 @@ import Spinner from "../components/Spinner";
 import { getProfiles, reset } from "../features/profiles/profileSlice";
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import ProfilePublic from '../type_interfaces/ProfilePublic';
 
 
 
@@ -27,17 +28,14 @@ const ProfilesPage = () => {
 
 	useEffect(
 		() => {
+		if (isError) {
+			toast.error(message, { icon: "😭" });
+		}
+
 			dispatch(getProfiles());
 		},
-		[dispatch]
+		[dispatch,isError,message]
 	);
-
-	// useEffect(() => {
-	// 	if (isError) {
-	// 		toast.error(message, { icon: "😭" });
-	// 	}
-	// 	dispatch(getProfiles());
-	// }, [dispatch, isError, message]);
 
 	if (isLoading) {
 		return <Spinner />;
@@ -50,15 +48,24 @@ const ProfilesPage = () => {
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">
-
+						<h1>Our Catalog of properties</h1>
 						<hr className="hr-text" />
 					</Col>
 				</Row>
 				{
 					<>
 						<Row className="mt-3">
-							
-				<h3>{ JSON.stringify(profiles)}</h3>
+							{profiles.map((profile:ProfilePublic) => (
+								<Col
+									key={profile.id}
+									sm={12}
+									md={6}
+									lg={4}
+									xl={3}
+								>
+									<Profile profile={profile} />
+								</Col>
+							))}
 						</Row>
 					</>
 				}
