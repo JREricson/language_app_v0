@@ -8,7 +8,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username")
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
-    email = serializers.EmailField(source="user.email")
+    # profile_photo = serializers.SerializerMethodField()
+    # email = serializers.EmailField(source="user.email")
     date_joined = serializers.DateTimeField(source="user.date_joined")
     # full_name = serializers.SerializerMethodField(read_only=True)
     country = CountryField(
@@ -22,7 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             # "full_name",
-            "email",
+            # "email", #TODO make sure hidden from public, but visible to user
             "date_joined",
             "id",
             "profile_photo",
@@ -35,6 +36,10 @@ class ProfileSerializer(serializers.ModelSerializer):
     #     first_name = obj.user.first_name.title()
     #     last_name = obj.user.last_name.title()
     #     return f"{first_name} {last_name}"
+
+    # # TODO test this method
+    # def get_profile_photo(self,obj):
+    #     return obj.user.Profile.profile_photo.url
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):

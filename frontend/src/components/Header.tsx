@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { GiHouse } from "react-icons/gi";
+import { GiBrain } from "react-icons/gi";
 import { LinkContainer } from "react-router-bootstrap";
 
 const Header = () => {
@@ -16,7 +16,7 @@ const Header = () => {
 				<Container>
 					<LinkContainer to="/">
 						<Navbar.Brand>
-							<GiHouse className="nav-icon" /> LanguaVersity
+							<GiBrain className="nav-icon" /> LanguaVersity
 						</Navbar.Brand>
 					</LinkContainer>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -28,8 +28,8 @@ const Header = () => {
 							<LinkContainer to="/">
 								<Nav.Link>Home</Nav.Link>
 							</LinkContainer>
-							<LinkContainer to="/properties">
-								<Nav.Link>Properties</Nav.Link>
+							<LinkContainer to="/about">
+								<Nav.Link>About</Nav.Link>
 							</LinkContainer>
 
 							<NavDropdown

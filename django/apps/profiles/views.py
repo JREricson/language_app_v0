@@ -1,12 +1,42 @@
-from rest_framework import permissions, status
+import logging
+
+from rest_framework import filters, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
+
+from ..common.shared_properties import DefaultPagination
+
 
 from .exceptions import InvalidCredentialsForProfileException, ProfileNotFoundException
 from .models import Profile
 from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+
+
+logger = logging.getLogger(__name__)
+
+# class ProfileFilter(django_filters.FilterSet):
+#     # TODO !important fix this
+
+#     advert_type = django_filters.CharFilter(
+#         field_name="advert_type", lookup_expr="iexact"
+#     )
+
+#     property_type = django_filters.CharFilter(
+#         field_name="property_type", lookup_expr="iexact"
+#     )
+
+#     price = django_filters.NumberFilter()
+#     price__gt = django_filters.NumberFilter(field_name="price", lookup_expr="gt")
+#     price__lt = django_filters.NumberFilter(field_name="price", lookup_expr="lt")
+
+#     class Meta:
+#         model = Property
+#         fields = ["advert_type", "property_type", "price"]
+
+#TODO add single profile view
 
 
 class GetProfileAPIView(APIView):
@@ -22,6 +52,26 @@ class GetProfileAPIView(APIView):
         user_profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(user_profile, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListAllProfilesAPIView(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all().order_by("-created_at")
+    pagination_class = DefaultPagination
+    # filter_backends = [
+    #     DjangoFilterBackend,
+    #     filters.SearchFilter,
+    #     filters.OrderingFilter,
+    # ]
+
+    # filterset_class = ProfileFilter
+    # search_fields = [
+    #     "username",
+    #     "first_name",
+    #     "last_name",
+    #     "country",
+    # ]
+    # ordering_fields = ["created_at"]
 
 
 class UpdateProfileAPIView(APIView):

@@ -1,8 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
+import profileReducer from '../features/profiles/profileSlice';
+
 export const store = configureStore({
   reducer: {
-  
+    profiles: profileReducer,
   },
 });
 
