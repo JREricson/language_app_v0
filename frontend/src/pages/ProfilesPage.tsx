@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Profile from "../components/Profile";
 import Spinner from "../components/Spinner";
-// import Title from "../components/Title";
+import Title from "../components/Title";
 import { getProfiles, reset } from "../features/profiles/profileSlice";
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -43,7 +43,7 @@ const ProfilesPage = () => {
 	return (
 		<>
 
-			{/* <Title title="Our Profiles Catalog" /> */}
+			<Title title="LanguaVersity user profiles" />
 			<h1>profile page</h1>
 			<Container>
 				<Row>
