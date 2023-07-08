@@ -11,6 +11,7 @@ import Profile from './components/Profile';
 import ProfilesPage from './pages/ProfilesPage';
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from './components/NotFound';
+import RegisterPage from './pages/RegisterPage';
 
 const App: FC = () => {
 
@@ -26,6 +27,7 @@ const App: FC = () => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/profile/all" element={<ProfilesPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

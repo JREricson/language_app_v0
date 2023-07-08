@@ -18,7 +18,7 @@ const Title = ({ title, description }: TitleProps) => {
 };
 
 Title.defaultProps = {
-  title: "Welcome to LanguaVersity",
+  title: "LanguaVersity",
   description: "A set of tools for learning a new Language",
 
 

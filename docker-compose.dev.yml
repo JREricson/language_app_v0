@@ -104,8 +104,11 @@ services:
       - /app/node_modules
     networks:
       - language-app
+    env_file:
+      - ./frontend/.env
     depends_on:
       - django_be
+
     # expose:
     #   - 5173
 

@@ -1,7 +1,12 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { GiBrain } from "react-icons/gi";
+
 import { LinkContainer } from "react-router-bootstrap";
+
+
+import { GiBrain } from "react-icons/gi";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+
 
 const Header = () => {
 	return (

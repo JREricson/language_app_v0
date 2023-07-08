@@ -17,24 +17,24 @@ const ProfilesPage = () => {
 
 
 
-	// const { profiles, isLoading, isError, message } = useSelector(
+	// const { profiles, isLoading, hasError, message } = useSelector(
 	// 	(state) => state.profiles
 	// );
 
-	const { profiles, isError, isLoading, isSuccess, message } = useAppSelector((state) => state.profiles);
+	const { profiles, hasError, isLoading, isSuccess, message } = useAppSelector((state) => state.profiles);
 
 	const dispatch = useAppDispatch();
 
 
 	useEffect(
 		() => {
-		if (isError) {
-			toast.error(message, { icon: "😭" });
-		}
+			if (hasError) {
+				toast.error(message, { icon: "😭" });
+			}
 
 			dispatch(getProfiles());
 		},
-		[dispatch,isError,message]
+		[dispatch, hasError, message]
 	);
 
 	if (isLoading) {
@@ -55,7 +55,7 @@ const ProfilesPage = () => {
 				{
 					<>
 						<Row className="mt-3">
-							{profiles.map((profile:ProfilePublic) => (
+							{profiles.map((profile: ProfilePublic) => (
 								<Col
 									key={profile.id}
 									sm={12}

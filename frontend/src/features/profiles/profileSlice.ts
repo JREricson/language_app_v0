@@ -1,18 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import profileAPIService from './profileAPIService';
-import { isAxiosError } from 'axios';
 import ProfilePublic from '../../type_interfaces/ProfilePublic';
+import { handleAxiosErrorAndReturnErrMsgsAsStr } from '../common/ErrorHandlers';
 
 const initialState = {
   profiles: [] as ProfilePublic[],
   // profile: {} as ProfilePublic,
-  isError: false,
+  hasError: false,
   isLoading: false,
   isSuccess: false,
   message: '',
   // TODO include error response?
 };
-
+// TODO not used, use it or remove it
 export interface ErrorResponse {
   statusCode: number;
   error: string;
@@ -21,9 +21,9 @@ export interface ErrorResponse {
 }
 
 export interface ProfileState {
-  profiles: ProfilePublic[],
+  profiles: ProfilePublic[];
   // profile: {} as ProfilePublic,
-  isError: Boolean;
+  hasError: Boolean;
   isLoading: Boolean;
   isSuccess: Boolean;
   message: string;
@@ -37,16 +37,7 @@ export const getProfiles = createAsyncThunk(
     try {
       return await profileAPIService.getProfiles();
     } catch (error: unknown) {
-      let msg: string = '';
-      if (isAxiosError(error)) {
-        // TODO make error an object and add default handler, ie handleAxiosError()
-        msg += error.message;
-        msg += '\n' + error.response?.status;
-        msg += '\n' + error.response?.headers;
-      } else {
-        msg = 'Unknown Error';
-        //  TODO:  log errors
-      }
+      let msg: string = handleAxiosErrorAndReturnErrMsgsAsStr(error);
 
       return thunkAPI.rejectWithValue(msg);
     }
@@ -76,7 +67,7 @@ export const profileSlice = createSlice({
       })
       .addCase(getProfiles.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.isError = true;
+        state.hasError = true;
         state.message = action.payload as string; //TODO verify this is the correct way
       });
   },
