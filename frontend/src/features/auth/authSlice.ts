@@ -3,16 +3,17 @@ import { isAxiosError } from 'axios';
 
 import authService from './authService';
 import { UserPublic } from './models/interfaces/UserPublic';
-import { Jwt } from './models/Jwt';
+import { Jwt } from './models/interfaces/Jwt';
 import { RootState } from '../../app/store';
 import { RegisterFormField } from './models/interfaces/RegisterFormField';
 import { handleAxiosErrorAndReturnErrMsgsAsStr } from '../common/ErrorHandlers';
+import { LoginCredentials } from './models/interfaces/LoginCredentials';
 
-const storedUser: string | null = localStorage.getItem('user');
+const storedUser: string | null = !!localStorage.getItem('user_id') ? localStorage.getItem('user_id') : null;
 const user: UserPublic | null = !!storedUser ? JSON.parse(storedUser) : null;
 
-const storedJwt: string | null = localStorage.getItem('jwt');
-const jwt: Jwt = !!storedJwt ? JSON.parse(storedJwt) : null;
+const storedJwt: string | null = !!localStorage.getItem('jwt') ? localStorage.getItem('jwt') : null;;
+const jwt: Jwt | null = !!storedJwt ? JSON.parse(storedJwt) : null;
 
 // TODO: move higher
 interface AsyncState {
@@ -22,8 +23,8 @@ interface AsyncState {
 }
 
 interface AuthState extends AsyncState {
-  user?: UserPublic | null;
-  jwt?: Jwt;
+  user: UserPublic | null;
+  jwt: Jwt | null;
   isAuthenticated?: boolean;
   err_message: string;
 }
@@ -40,9 +41,9 @@ const initialState: AuthState = {
 
 export const register = createAsyncThunk(
   'auth/register',
-  async (userFromForm: RegisterFormField, thunkAPI) => {
+  async (RegisterFormData: RegisterFormField, thunkAPI) => {
     try {
-      return await authService.register(userFromForm);
+      return await authService.register(RegisterFormData);
     } catch (error: unknown) {
       const msg: string = handleAxiosErrorAndReturnErrMsgsAsStr(error);
 
@@ -50,6 +51,27 @@ export const register = createAsyncThunk(
     }
   }
 );
+
+export const login = createAsyncThunk(
+  'auth//jwt/create/',
+  async (loginCredentials: LoginCredentials, thunkAPI) => {
+    try {
+      return await authService.login(loginCredentials);
+    } catch (error: unknown) {
+      const msg: string = handleAxiosErrorAndReturnErrMsgsAsStr(error);
+
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+export const logout = createAsyncThunk('auth/logout', async () => {
+  try {
+    await authService.logout();
+  } catch (error) {
+    //TODO log error
+  }
+});
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -78,32 +100,32 @@ export const authSlice = createSlice({
         state.hasError = true;
         state.user = null;
         state.err_message = action.payload as string;
-      });
-    // LOGIN
-    // .addCase(login.pending, (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase(login.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isSuccess = true;
-    //   state.jwt = action.payload.jwt;
-    //   state.isAuthenticated = true;
-    //   state.user = action.payload.user;
-    // })
-    // .addCase(login.rejected, (state) => {
-    //   state.isLoading = false;
-    //   state.hasError = true;
-    //   state.user = null;
-    //   state.isAuthenticated = false;
-    //   state.user = null;
-    // })
-    // // LOGOUT
-    // .addCase(logout.fulfilled, (state) => {
-    //   state.user = null;
-    //   state.jwt = null;
-    //   state.isAuthenticated = false;
-    // })
-    // // VERIFY JWT
+      })
+      // LOGIN
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.jwt = action.payload //as Jwt
+        state.isAuthenticated = true;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.hasError = true;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.err_message = action.payload as string;
+      })
+      // LOGOUT
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.jwt = null
+        state.isAuthenticated = false;
+      })
+    // VERIFY JWT
     // .addCase(verifyJwt.pending, (state) => {
     //   state.isLoading = true;
     // })

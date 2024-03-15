@@ -19,6 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
+    # USERNAME_FIELD:= name of field used as the unique identifier
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
@@ -35,5 +36,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     # def get_full_name(self):
     #     return f"{self.first_name} {self.last_name}"
 
-    def get_short_name(self):
-        return self.username
+    # def get_short_name(self):
+    #     return self.username

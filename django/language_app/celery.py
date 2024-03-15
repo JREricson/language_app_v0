@@ -6,7 +6,7 @@ from celery import Celery
 from language_app import settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "language_app.settings")
 
-#naming file for celery app as language_app
+# naming file for celery app as language_app
 app = Celery("language_app", broker=settings.result_backend)
 
 app.config_from_object("language_app.settings", namespace="CELERY"),

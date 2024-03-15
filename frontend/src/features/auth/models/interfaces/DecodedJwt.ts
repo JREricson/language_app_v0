@@ -1,7 +1,9 @@
 import { UserPublic } from './UserPublic';
 
 export interface DecodedJwt {
-  user: UserPublic;
+  token_type: string;
   exp: number;
   iat: number;
+  jti: string;
+  user_id: string;
 }

@@ -21,7 +21,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("Value <first_name> is required."))
 
         if not last_name:
-            raise ValueError("Value  <last_name>is required).")
+            raise ValueError(_("Value  <last_name> is required)."))
 
         if email:
             email = self.normalize_email(email)

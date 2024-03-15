@@ -52,7 +52,7 @@ const RegisterPage = () => {
       toast.error(err_message);
       dispatch(reset());
     }
-  }, [isSuccess, hasError,err_message, dispatch]);
+  }, [isSuccess, hasError, err_message, dispatch]);
 
 
 
@@ -209,7 +209,7 @@ const RegisterPage = () => {
 
         <Row className="py-3">
           <Col>
-            Have an account already?
+            Have an account?&nbsp;
             <Link to="/login">Login</Link>
           </Col>
         </Row>

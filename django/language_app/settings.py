@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django_countries",
     "djoser",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "djcelery_email",
     "drf_spectacular",
     "corsheaders",
@@ -136,12 +137,12 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-        'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    }
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Language APP API',
-    'VERSION': '0.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Language APP API",
+    "VERSION": "0.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
 }
 
@@ -153,7 +154,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=120
     ),  # TODO change to shorter time, 15 min?
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "SIGNING_KEY": os.environ.get("JWT_SIGNING_KEY"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
@@ -214,7 +217,7 @@ logging.config.dictConfig(
             "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
         "loggers": {
-            "": {
+            "std": {
                 "level": "INFO",
                 "handlers": ["console", "file_info", "file_debug"],
                 "propagate": False,
@@ -237,7 +240,7 @@ DATABASES = {
     }
 }
 
-#celery settings
+# celery settings
 result_backend = os.environ.get("CELERY_BROKER")
 result_backend = os.environ.get("CELERY_BACKEND")
 timezone = "UTC"
@@ -258,4 +261,6 @@ SITE_NAME = "Language App"
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
 
 
+# ADMIN_PATH = os.environ.get("ADMIN_PATH")
 
+ADMIN_PATH = "admin/"

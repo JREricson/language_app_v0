@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 #         model = Property
 #         fields = ["advert_type", "property_type", "price"]
 
-#TODO add single profile view
+# TODO add single profile view
 
 
 class GetProfileAPIView(APIView):
