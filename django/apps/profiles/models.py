@@ -8,26 +8,26 @@ from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
-
-class LanguageFluency(models.TextChoices):
-    NONE = "None", _("None")
-    FEMALE = "Elementary", _("Elementary")
-    LIMITED = (
-        "Limited",
-        _("Limited"),
-    )
-    PROFESSIONAL = (
-        "Professional",
-        _("Professional"),
-    )
-    FULL_PROFESSIONAL = (
-        "Full Professional",
-        _("Full Professional"),
-    )
-    NATIVE_OR_BILINGUAL = (
-        "Native Or Bilingual",
-        _("Native Or Bilingual"),
-    )
+# left in for future reference -  TODO - delete later
+# class LanguageFluency(models.TextChoices):
+#     NONE = "None", _("None")
+#     ELEMENTARY = "Elementary", _("Elementary")
+#     LIMITED = (
+#         "Limited",
+#         _("Limited"),
+#     )
+#     PROFESSIONAL = (
+#         "Professional",
+#         _("Professional"),
+#     )
+#     FULL_PROFESSIONAL = (
+#         "Full Professional",
+#         _("Full Professional"),
+#     )
+#     NATIVE_OR_BILINGUAL = (
+#         "Native Or Bilingual",
+#         _("Native Or Bilingual"),
+#     )
 
 
 class Profile(TimeStampedUUIDModel):
@@ -39,31 +39,22 @@ class Profile(TimeStampedUUIDModel):
 
     profile_photo = models.ImageField(
         verbose_name=_("Profile Photo"),
-        default="/profile_default.png",
+        default="/profile_default.svg",
         blank=False,
         null=False,
     )
-
-    # language_fluency = models.CharField(
-    #     verbose_name=_("Language Fluency"),
-    #     choices=LanguageFluency.choices,
-    #     default=LanguageFluency.NONE,
-    #     max_length=19,
-    #     blank=False,
-    #     null=False,
-    # )
 
     country = CountryField(
         verbose_name=_("Current Country"), default="USA", blank=False, null=False
     )
 
-    # native_language = models.CharField(
-    #     verbose_name=_("Native Language"),
-    #     max_length=7,
-    #     choices=LANGUAGES,
-    #     blank=False,
-    #     null=False,
-    # )
+    native_language = models.CharField(
+        verbose_name=_("Native Language"),
+        max_length=7,
+        choices=LANGUAGES,
+        blank=False,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.user.username}'s profile"
