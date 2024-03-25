@@ -1,10 +1,10 @@
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework import permissions
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework import permissions
-
 
 urlpatterns = [
     path(settings.ADMIN_PATH, admin.site.urls),
@@ -19,3 +19,7 @@ urlpatterns = [
         name="swagger-doc",
     ),
 ]
+# TODO find a better place for these
+admin.site.site_header = f"{settings.SITE_NAME} Admin"
+admin.site.site_title = f"{settings.SITE_NAME} Admin Portal"
+admin.site.index_title = f"Welcome to the {settings.SITE_NAME} Portal"

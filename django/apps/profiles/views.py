@@ -1,19 +1,18 @@
 import logging
 
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
 from ..common.shared_properties import DefaultPagination
-
-
-from .exceptions import InvalidCredentialsForProfileException, ProfileNotFoundException
+from .exceptions import (InvalidCredentialsForProfileException,
+                         ProfileNotFoundException)
 from .models import Profile
 from .renderers import ProfileJSONRenderer
-from .serializers import ProfileSerializer, UpdateProfileSerializer
-from django_filters.rest_framework import DjangoFilterBackend
-
+from .serializers import (ProfilePrivateSerializer, ProfilePublicSerializer,
+                          UpdateProfileSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -39,23 +38,25 @@ logger = logging.getLogger(__name__)
 # TODO add single profile view
 
 
-class GetProfileAPIView(APIView):
+class GetCurrentProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [ProfileJSONRenderer]
 
     @extend_schema(
-        summary="Returns profile details of user currently logged in",
-        responses=ProfileSerializer,
+        summary="Returns profile details of user currently logged in.",
+        responses=ProfilePrivateSerializer,
     )
     def get(self, request):
         user = self.request.user
         user_profile = Profile.objects.get(user=user)
-        serializer = ProfileSerializer(user_profile, context={"request": request})
+        serializer = ProfilePrivateSerializer(
+            user_profile, context={"request": request}
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ListAllProfilesAPIView(generics.ListAPIView):
-    serializer_class = ProfileSerializer
+    serializer_class = ProfilePublicSerializer
     queryset = Profile.objects.all().order_by("-created_at")
     pagination_class = DefaultPagination
     # filter_backends = [
@@ -81,10 +82,10 @@ class UpdateProfileAPIView(APIView):
     serializer_class = UpdateProfileSerializer
 
     @extend_schema(
-        summary="Updates user profile",
+        summary="Update user profile",
         description="All fields supplied will be updated. Fields that do not need to be changed do not need to be submitted",
         request=UpdateProfileSerializer,
-        responses=ProfileSerializer,
+        responses=ProfilePrivateSerializer,
     )
     def patch(self, request, username):
         try:

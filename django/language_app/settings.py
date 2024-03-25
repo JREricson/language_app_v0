@@ -264,3 +264,5 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
 # ADMIN_PATH = os.environ.get("ADMIN_PATH")
 
 ADMIN_PATH = "admin/"
+
+SITE_NAME = "LanguaVersity"

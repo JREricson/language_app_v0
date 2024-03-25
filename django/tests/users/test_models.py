@@ -93,7 +93,6 @@ def test_user_email_incorrect(user_factory):
     assert str(err.value) == "Email address must be valid."
 
 
-
 # TODO assert strong passwords
 
 # TODO assert valid email with validators

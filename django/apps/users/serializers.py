@@ -10,24 +10,22 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     profile_photo = serializers.ImageField(source="profile.profile_photo")
     country = CountryField(source="profile.country")
-    # language_fluency = serializers.CharField(source="profile.spanish_fluency")
-    # native_language = serializers.CharField(source="profile.native_language")
+    native_language = serializers.CharField(source="profile.native_language")
 
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
-    # full_name = serializers.SerializerMethodField(source="get_full_name")
 
     class Meta:
         model = User
         fields = [
             "id",
             "username",
-            "email",
             "first_name",
             "last_name",
-            # "full_name",
             "profile_photo",
+            "native_language",
             "country",
+            # "email", TODO -- include or not -- do not want to be public
         ]
 
     def get_first_name(self, obj):
