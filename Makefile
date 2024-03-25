@@ -1,5 +1,6 @@
 ifneq (,$(wildcard ./.env.dev))
 include .env.dev
+# include .env.prod
 export
 ENV_FILE_PARAM = --env-file .env.dev
 COMPOSE_FILE  = docker-compose.dev.yml
@@ -32,7 +33,7 @@ migrate:
 makemigrations:
 	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py makemigrations
 
-superuser-make:
+makesuperuser:
 	docker-compose -f $(COMPOSE_FILE) exec django_be python3 manage.py createsuperuser
 
 collectstatic:

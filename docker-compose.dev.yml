@@ -47,6 +47,8 @@ services:
       restart: always
       depends_on:
           - django_be
+          - react_fe
+          - flower
       volumes:
           - static_volume:/app/staticfiles
           - media_volume:/app/mediafiles
@@ -82,13 +84,35 @@ services:
           - .:/app
       env_file:
           - .env.dev
-      ports:
-          - "5557:5555"
+      # ports:
+      #     - "5557:5555"
       depends_on:
           - redis
           - db
       networks:
         - language-app
+      expose:
+        - 5555
+
+  react_fe:
+    build: 
+      context: ./frontend
+      dockerfile: docker/local/Dockerfile.dev
+    restart: on-failure
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - language-app
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - django_be
+
+    # expose:
+    #   - 5173
+
+
 
 
 volumes:

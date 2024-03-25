@@ -90,7 +90,7 @@ services:
           - redis
           - db
       networks:
-        - language-app
+        -  age-app
 
 
 volumes:
