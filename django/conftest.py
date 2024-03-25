@@ -4,7 +4,7 @@ from pytest_factoryboy import register
 from tests.factories import ProfileFactory, UserFactory
 
 register(ProfileFactory)
-register(UserFactory) 
+register(UserFactory)
 
 
 @pytest.fixture
