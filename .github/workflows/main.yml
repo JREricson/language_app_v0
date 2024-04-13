@@ -83,9 +83,24 @@ jobs:
         run: |
           docker-compose -f docker-compose.ci.yml logs
         # -T flag in docker disables TTL
+      - name: show Django logs
+        run: |
+          docker-compose -f docker-compose.ci.yml logs django_be
+        # -T flag in docker disables TTL
       - name: show files -- used for debugging if container crashed
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be ls
+      
+      - name: make migrations
+        run: |
+          docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py makemigrations
+      - name: <igrate
+        run: |
+          docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py migrate
+       
+      
+      
+      
       - name: run django tests
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings
