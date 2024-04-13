@@ -27,10 +27,11 @@ def test_user_creates_profile():
     assert User.objects.count() == 1
 
     user_profile = Profile.objects.get(user__id=user.id)
+    print(user_profile.country)
 
     assert user_profile.about_me == "Say something about yourself."
     assert str(user_profile.profile_photo).endswith(".svg")
-    assert isinstance(user_profile.country, Country("USA"))
+    assert user_profile.country == Country("USA")
     assert user_profile.native_language is None
 
 
@@ -43,13 +44,14 @@ def test_get_profile_endpoint(api_client):
     profile_url = reverse("profile_views", args=[user.id])
     response = api_client.get(profile_url)
 
+    print(response.data)
     assert response.status_code == status.HTTP_200_OK
     assert response.data["username"] == user.username
     assert response.data["first_name"] == user.first_name
     assert response.data["last_name"] == user.last_name
     assert isinstance(response.data["profile_photo"], str)
     assert response.data["about_me"] == "Say something about yourself."
-    assert isinstance(response.data["profile_photo", str])
+    assert isinstance(response.data["profile_photo"], str)
     assert response.data["native_language"] is None
 
 
