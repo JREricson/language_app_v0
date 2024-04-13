@@ -28,3 +28,5 @@ redis==4.5.5
 watchdog==3.0.0
 drf-spectacular==0.26.2
 django-cors-headers==4.0.0
+spacy==3.7.4
+django-debug-toolbar==4.3.0
