@@ -34,7 +34,7 @@ class Profile(TimeStampedUUIDModel):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
     about_me = models.TextField(
-        verbose_name=_("About me"), default="say something about yourself"
+        verbose_name=_("About me"), default="Say something about yourself."
     )
 
     profile_photo = models.ImageField(

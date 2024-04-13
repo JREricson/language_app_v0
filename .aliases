@@ -1,15 +1,15 @@
 #!/bin/sh
+alias COMPOSE_FILE="docker-compose.dev.yml"
 
+dcMigrate() {
+  docker-compose -f docker-compose.dev.yml exec django_be python3 manage.py migrate "$@"
+}
 
-dcMigrate(){
-    docker-compose -f docker-compose.dev.yml exec django_be python3 manage.py migrate "$@"
- }
-
-dcAppExec(){
+dcAppExec() {
   docker-compose -f docker-compose.dev.yml exec django_be "$@"
 }
 
-dcAppMan(){
+dcAppMan() {
   docker-compose -f docker-compose.dev.yml exec django_be python3 manage.py "$@"
 }
 
@@ -18,7 +18,7 @@ dcBuildWebImageOnGithubDev() {
 
 }
 
-dcBuildNginxImageOnGithubDev() { 
+dcBuildNginxImageOnGithubDev() {
   cd ./nginx
   docker build -f ./Dockerfile -t ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/nginx:latest .
   cd -
@@ -28,11 +28,10 @@ dcLoginGithub() {
   docker login ghcr.io -u "$GH_USERNAME" -p "$GH_TOKEN"
 }
 
-dcPushWebGithub(){
+dcPushWebGithub() {
   docker push ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/web:latest
 }
 
-
-dcPushNginxGithub(){
+dcPushNginxGithub() {
   docker push ghcr.io/"$GH_USERNAME"/"$GH_REPOSITORY_NAME"/nginx:latest
 }

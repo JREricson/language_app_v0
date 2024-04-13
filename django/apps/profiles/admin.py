@@ -4,13 +4,12 @@ from .models import Profile
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["id", "pkid", "user", "country"]
+    list_display = ["id", "pkid", "user", "country", "native_language"]
     list_filter = [
-        "id",
-        "pkid",
-        "user",
+        "native_language",
+        "country",
     ]
-    ist_display_links = ["id", "pkid", "user"]
+    list_display_links = ["id", "pkid", "user"]
 
 
 admin.site.register(Profile, ProfileAdmin)

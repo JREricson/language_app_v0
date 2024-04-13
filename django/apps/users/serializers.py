@@ -1,4 +1,3 @@
-from django_countries.serializer_fields import CountryField
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
@@ -8,10 +7,6 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile_photo = serializers.ImageField(source="profile.profile_photo")
-    country = CountryField(source="profile.country")
-    native_language = serializers.CharField(source="profile.native_language")
-
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
 
@@ -22,10 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
-            "profile_photo",
-            "native_language",
-            "country",
-            # "email", TODO -- include or not -- do not want to be public
         ]
 
     def get_first_name(self, obj):
@@ -39,6 +30,16 @@ class UserSerializer(serializers.ModelSerializer):
         if instance.is_superuser:
             representation["admin"] = True
         return representation
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get(
+            "username",
+        )
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+
+        instance.save()
+        return instance
 
 
 class CreateUserSerializer(UserCreateSerializer):

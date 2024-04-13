@@ -6,6 +6,8 @@ from pathlib import Path
 
 from django.utils.log import DEFAULT_LOGGING
 
+SITE_NAME = "LanguaVersity"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # environ.Env.read_env(BASE_DIR / "./.env.dev")
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     "djcelery_email",
     "drf_spectacular",
     "corsheaders",
+    "debug_toolbar",
     # local
     "apps.common",
     "apps.users",
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -138,23 +142,24 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Language APP API",
+    "TITLE": f"{SITE_NAME} API",
     "VERSION": "0.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    # OTHER SETTINGS
 }
-
+ACCESS_TOKEN_LIFE_MIN = 600 if DEBUG else 15
+REFRESH_TOKEN_LIFE_DAY = 15
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": (
         "Bearer",
         "JWT",
     ),
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=120
+        minutes=ACCESS_TOKEN_LIFE_MIN
     ),  # TODO change to shorter time, 15 min?
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_LIFE_DAY),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "SIGNING_KEY": os.environ.get("JWT_SIGNING_KEY"),
@@ -184,7 +189,7 @@ DJOSER = {
 
 logger = logging.getLogger(__name__)
 
-LOG_LEVEL = "INFO"
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
 logging.config.dictConfig(
     {
@@ -203,7 +208,7 @@ logging.config.dictConfig(
                 "formatter": "console",
             },
             "file_info": {
-                "level": "INFO",
+                "level": f"{LOG_LEVEL}",
                 "class": "logging.FileHandler",
                 "formatter": "file",
                 "filename": "logs/file_info.log",
@@ -219,7 +224,10 @@ logging.config.dictConfig(
         "loggers": {
             "std": {
                 "level": "INFO",
-                "handlers": ["console", "file_info", "file_debug"],
+                "handlers": [
+                    "console",
+                    "file_info",
+                ],
                 "propagate": False,
             },
             "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
@@ -255,7 +263,6 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 DOMAIN = os.environ.get("DOMAIN")
-SITE_NAME = "Language App"
 
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
@@ -264,5 +271,3 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
 # ADMIN_PATH = os.environ.get("ADMIN_PATH")
 
 ADMIN_PATH = "admin/"
-
-SITE_NAME = "LanguaVersity"
