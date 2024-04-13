@@ -82,14 +82,10 @@ jobs:
       - name: show logs
         run: |
           docker-compose -f docker-compose.ci.yml logs
-      - name: show files -  dlete test later
-        run: |
-          docker-compose -f docker-compose.ci.yml exec -T django_be ls
         # -T flag in docker disables TTL
-      - name: run tests
+      - name: run django tests
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings
-
       - name: stop containers
         run: |
           docker-compose -f docker-compose.ci.yml down
