@@ -83,6 +83,9 @@ jobs:
         run: |
           docker-compose -f docker-compose.ci.yml logs
         # -T flag in docker disables TTL
+      - name: show files -- used for debugging if container crashed
+        run: |
+          docker-compose -f docker-compose.ci.yml exec -T django_be ls
       - name: run django tests
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings
