@@ -1,4 +1,4 @@
-import { UserPublic } from './UserPublic';
+import { UserPublic } from "./UserPublic";
 
 export interface DecodedJwt {
   token_type: string;

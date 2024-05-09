@@ -1,11 +1,14 @@
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
+from rest_framework_simplejwt.views import TokenBlacklistView
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
     path(settings.ADMIN_PATH, admin.site.urls),
+    path(
+        "api/v0/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"
+    ),
     path("api/v0/auth/", include("djoser.urls")),
     path("api/v0/auth/", include("djoser.urls.jwt")),
     path("api/v0/profile/", include("apps.profiles.urls")),
@@ -16,7 +19,7 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-doc",
     ),
-    path("__debug__/", include("debug_toolbar.urls")),
+    # path("__debug__/", include("debug_toolbar.urls")),
 ]
 admin.site.site_header = f"{settings.SITE_NAME} Admin"
 admin.site.site_title = f"{settings.SITE_NAME} Admin Portal"

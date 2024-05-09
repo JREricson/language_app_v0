@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from django.core.exceptions import ValidationError
 
-from ..common.shared_properties import DefaultPagination
+from ..common.shared_properties import CustomPagination, DefaultPagination
 from .exceptions import InvalidCredentialsForProfileException, ProfileNotFoundException
 from .models import Profile
 from .renderers import ProfileJSONRenderer, ProfilesJSONRenderer
@@ -38,6 +38,7 @@ class GetCurrentProfileAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# TODO - update schema description with  pagination
 @extend_schema_view(
     get=extend_schema(
         summary="Returns list of all profiles. ",
@@ -56,7 +57,7 @@ class ListAllProfilesAPIView(generics.ListAPIView):
     renderer_classes = [ProfilesJSONRenderer]
     serializer_class = ProfilePublicSerializer
     queryset = Profile.objects.all().order_by("-created_at")
-    pagination_class = DefaultPagination
+    pagination_class = CustomPagination
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,

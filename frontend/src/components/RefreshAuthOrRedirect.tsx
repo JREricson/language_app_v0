@@ -1,77 +1,71 @@
-import React, { useEffect } from 'react';
-import { Jwt } from '../features/auth/models/interfaces/Jwt';
-import { logout } from '../features/auth/authSlice';
-import axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { stdJSONConfig } from '../features/common/headerConfig';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { Jwt } from "../features/auth/interfaces/Jwt";
+import { logout } from "../features/auth/authSlice";
+import axios from "axios";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { appJsonAxiosConfig } from "../common/AxiosConfigUtil";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const RefreshAuthOrRedirect = () => {
+import { StatusCodes } from "http-status-codes";
 
+const RefreshAuthOrRedirect = () => {
   const dispatch = useAppDispatch();
 
-  const { isLoading, isSuccess, hasError, err_message, jwt, isAuthenticated } = useAppSelector((state) => state.auth);
-
-
+  let { status, hasError, err_message, isAuthenticated } = useAppSelector(
+    (state) => state.auth
+  );
 
   const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
   const navigate = useNavigate();
   useEffect(() => {
     const refreshTokens = async () => {
-
-
-      if (localStorage.jwt) {
-
-        const parsed_jwt: Jwt = JSON.parse(localStorage.jwt);
-        const refresh_token: string = parsed_jwt.refresh;
+      if (localStorage.getItem("jwt_refresh")) {
+        // const parsed_jwt: Jwt = JSON.parse(localStorage.jwt);
+        // const refresh_token: string = parsed_jwt.refresh;
+        const refresh_token: string | null =
+          localStorage.getItem("jwt_refresh");
         console.log(refresh_token);
 
         try {
-          const response = await axios.post(`${REACT_APP_API_PATH}auth/jwt/refresh/`, { 'refresh': refresh_token }, stdJSONConfig);
+          const response = await axios.post(
+            `${REACT_APP_API_PATH}auth/jwt/refresh/`,
+            { refresh: refresh_token },
+            appJsonAxiosConfig
+          );
 
-          if (response.status === 200) {
-            localStorage.jwt = JSON.stringify(response.data);
+          if (response.status === StatusCodes.OK) {
+            const jwt: Jwt = response.data;
+            localStorage.jwt_access = jwt.access;
+            localStorage.jwt_refresh = jwt.refresh;
+            isAuthenticated = true;
           } else {
-            throw Error(`wrong status code. value: ${response.status}`);
+            throw Error(`Wrong status code. value: <${response.status}>.`);
           }
-
-
         } catch (error) {
           console.log(error);
           dispatch(logout);
 
-
-          localStorage.removeItem('jwt');
-          toast.warn("You have been logged out");
+          localStorage.removeItem("jwt_access");
+          localStorage.removeItem("jwt_refresh");
+          //TODO this will keep getting a toast msg
+          toast.warn("You have been logged out due to inactivity.");
           navigate("/login");
         }
-
       } else {
-        console.log('no jwt ');
+        console.log("no jwt ");
       }
-
-
-
-
-
-
     };
+    //TODO - make sure set to value less than jwt expiration time
+    const second = 1000; //milliseconds
 
-    const seconds = 1000;//milliseconds
-    refreshTokens();
-    setInterval(refreshTokens, 10 * seconds);
-
-
+    // refreshTokens();
+    //TODO -  perform initial check based on expiration
+    setInterval(refreshTokens, 10 * second);
   }, []);
 
-
-
-
-
-  return (
-    <></>);
+  return <></>;
 };
 
 export default RefreshAuthOrRedirect;

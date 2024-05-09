@@ -4,65 +4,54 @@ import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import isEmail from 'validator/lib/isEmail';
+import isEmail from "validator/lib/isEmail";
 
-
-import Spinner from "../components/Spinner";
-import Title from "../components/Title";
-import { login, reset } from "../features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import Spinner from "../../components/Spinner";
+import Title from "../../components/Title";
+import { login, reset } from "../../features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { ReducerStatus } from "../../common/ReducerStatus";
+import { LoginCredentials } from "../../features/auth/interfaces/LoginCredentials";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
-
   const dispatch = useAppDispatch();
 
-  const { isLoading, isSuccess, hasError, err_message } = useAppSelector((state) => state.auth);
+  const { status, hasError, err_message } = useAppSelector(
+    (state) => state.auth
+  );
 
   const navigate = useNavigate();
 
-
-
   const clearForm = (): void => {
-    setEmail('');
-    setPassword('');
+    setEmail("");
+    setPassword("");
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (status === ReducerStatus.Success) {
       dispatch(reset());
       clearForm();
-      navigate('/'); //TODO -  go to user's profile
-      toast.success(
-        "You have been successfully logged in"
-      );
+      navigate("/"); //TODO -  go to user's profile or to previous page where user was redirected from
+      toast.success("You have been successfully logged in.");
     }
 
     if (hasError) {
       toast.error(err_message);
       dispatch(reset());
     }
-  }, [isSuccess, hasError, err_message, dispatch]);
-
-
-
-
-
-
+  }, [status, hasError, err_message, dispatch]);
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const LoginData = {
+    const loginData: LoginCredentials = {
       email,
       password,
     };
-    dispatch(login(LoginData));
-
-
+    dispatch(login(loginData));
   };
 
   return (
@@ -80,12 +69,10 @@ const LoginPage = () => {
           </Col>
         </Row>
 
-        {isLoading && <Spinner />}
+        {ReducerStatus.Loading === status && <Spinner />}
         <Row className="mt-3">
           <Col className="justify-content-center">
             <Form onSubmit={submitHandler}>
-
-
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
@@ -96,28 +83,17 @@ const LoginPage = () => {
                 />
               </Form.Group>
 
-
-
-
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter Password"
                   value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
 
-
-
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3"
-              >
+              <Button type="submit" variant="primary" className="mt-3">
                 Sign In
               </Button>
             </Form>
@@ -130,7 +106,7 @@ const LoginPage = () => {
             <Link to="/register">Register</Link>
           </Col>
         </Row>
-      </Container >
+      </Container>
     </>
   );
 };

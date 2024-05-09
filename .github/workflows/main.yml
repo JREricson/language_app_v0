@@ -1,6 +1,6 @@
 name: Continuous Integration
 
-on: 
+on:
   push:
   pull_request:
     branches:
@@ -8,14 +8,11 @@ on:
       - develop
       - stage
 
-
-
 env:
   WEB_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/web
   NGINX_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/nginx
 
 jobs:
-
   build:
     name: Build Docker Images
     runs-on: ubuntu-latest
@@ -46,16 +43,12 @@ jobs:
           echo "CELERY_BROKER=${{ secrets.CELERY_BROKER }}" >> .env
           echo "CELERY_BACKEND=${{ secrets.CELERY_BACKEND }}" >> .env
 
-
-
-
       - name: Add environment variables to .env.db
         run: |
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env.db
 
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env.db
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env.db
-
 
       - name: Set environment variables
         run: |
@@ -90,21 +83,17 @@ jobs:
       - name: show files -- used for debugging if container crashed
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be ls
-      
-      - name: make migrations
+
+      - name: Make migrations
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py makemigrations
-      - name: <igrate
+      - name: Migrate
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py migrate
-       
-      
-      
-      
+
       - name: run django tests
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be pytest -p no:warnings
       - name: stop containers
         run: |
           docker-compose -f docker-compose.ci.yml down
-

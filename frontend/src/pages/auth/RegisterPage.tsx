@@ -4,13 +4,13 @@ import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import isEmail from 'validator/lib/isEmail';
+import isEmail from "validator/lib/isEmail";
 
-
-import Spinner from "../components/Spinner";
-import Title from "../components/Title";
-import { register, reset } from "../features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import Spinner from "../../components/Spinner";
+import Title from "../../components/Title";
+import { register, reset } from "../../features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { ReducerStatus } from "../../common/ReducerStatus";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -20,29 +20,28 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [re_password, setRePassword] = useState("");
 
-
   const dispatch = useAppDispatch();
 
-  const { isLoading, isSuccess, hasError, err_message } = useAppSelector((state) => state.auth);
+  const { status, hasError, err_message } = useAppSelector(
+    (state) => state.auth
+  );
 
   const navigate = useNavigate();
 
-
-
   const clearForm = (): void => {
-    setUsername('');
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
-    setRePassword('');
+    setUsername("");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setRePassword("");
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (status === ReducerStatus.Success) {
       dispatch(reset());
       clearForm();
-      navigate('/login');
+      navigate("/login");
       toast.success(
         "An activation link has been sent to the email provided. Click the link to activate your account."
       );
@@ -52,28 +51,25 @@ const RegisterPage = () => {
       toast.error(err_message);
       dispatch(reset());
     }
-  }, [isSuccess, hasError, err_message, dispatch]);
-
-
+  }, [status, hasError, err_message, dispatch]);
 
   const doesFormPassSimpleValidationAndSetErrorMsgs = (): boolean => {
-
     let passValidation = true;
     if (password.length < 8) {
       passValidation = false;
       toast.error("Password needs to be more than 8 characters.");
-
     }
 
     if (password !== re_password) {
       passValidation = false;
       toast.error("Passwords do not match.");
-
     }
 
     if (first_name.length < 1 || last_name.length < 1 || username.length < 1) {
       passValidation = false;
-      toast.error("first name, username, and last name must be at least 1 character");
+      toast.error(
+        "First name, username, and last name must be at least 1 character."
+      );
     }
 
     if (!isEmail(email)) {
@@ -82,17 +78,12 @@ const RegisterPage = () => {
     }
 
     return passValidation;
-
   };
-
-
-
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let simpleValidationPassed: boolean = doesFormPassSimpleValidationAndSetErrorMsgs();
-
-
+    let simpleValidationPassed: boolean =
+      doesFormPassSimpleValidationAndSetErrorMsgs();
 
     if (simpleValidationPassed) {
       const userData = {
@@ -105,7 +96,6 @@ const RegisterPage = () => {
       };
       dispatch(register(userData));
     }
-
   };
   return (
     <>
@@ -122,7 +112,7 @@ const RegisterPage = () => {
           </Col>
         </Row>
 
-        {isLoading && <Spinner />}
+        {status === ReducerStatus.Loading && <Spinner />}
         <Row className="mt-3">
           <Col className="justify-content-center">
             <Form onSubmit={submitHandler}>
@@ -132,9 +122,7 @@ const RegisterPage = () => {
                   type="name"
                   placeholder="Enter Username"
                   value={username}
-                  onChange={(e) =>
-                    setUsername(e.target.value)
-                  }
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </Form.Group>
 
@@ -144,9 +132,7 @@ const RegisterPage = () => {
                   type="name"
                   placeholder="Enter First Name"
                   value={first_name}
-                  onChange={(e) =>
-                    setFirstName(e.target.value)
-                  }
+                  onChange={(e) => setFirstName(e.target.value)}
                 />
               </Form.Group>
 
@@ -156,9 +142,7 @@ const RegisterPage = () => {
                   type="name"
                   placeholder="Enter Last Name"
                   value={last_name}
-                  onChange={(e) =>
-                    setLastName(e.target.value)
-                  }
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </Form.Group>
 
@@ -178,9 +162,7 @@ const RegisterPage = () => {
                   type="password"
                   placeholder="Enter Password"
                   value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
 
@@ -190,17 +172,11 @@ const RegisterPage = () => {
                   type="password"
                   placeholder="Enter confirm Password"
                   value={re_password}
-                  onChange={(e) =>
-                    setRePassword(e.target.value)
-                  }
+                  onChange={(e) => setRePassword(e.target.value)}
                 />
               </Form.Group>
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3"
-              >
+              <Button type="submit" variant="primary" className="mt-3">
                 Sign Up
               </Button>
             </Form>

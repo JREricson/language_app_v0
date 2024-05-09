@@ -4,11 +4,8 @@ import { FaBed, FaShower } from "react-icons/fa";
 import { GiStairs } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
-import { connect, ConnectedProps } from 'react-redux';
-import ProfilePublic from '../type_interfaces/ProfilePublic';
-
-
-
+import { connect, ConnectedProps } from "react-redux";
+import ProfilePublic from "../type_interfaces/ProfilePublic";
 
 // const connector = connect(mapState, mapDispatch)
 // interface ProfileProp extends PropsFromRedux {
@@ -16,57 +13,54 @@ import ProfilePublic from '../type_interfaces/ProfilePublic';
 // }
 
 interface ProfileProps {
-
   profile: ProfilePublic;
-
 }
 
 const Profile = ({ profile }: ProfileProps) => {
-
-
-
-
   return (
-    <Card style={{ width: "18rem" }}>
+    <Card>
       <Card.Body>
-        <Card.Title as="h4">
+        <Card.Title as="h2">
+          {/* //TODO center */}
+
+          <h2>{profile.username}</h2>
+
           {/* <strong>{profile.title}</strong> */}
         </Card.Title>
-      </Card.Body>
 
-
-      <Badge
-        bg="success"
-        className="position-absolute top-0 start-100 translate-middle rounded-pill"
-      >
-        {profile.first_name}
-      </Badge>
-
-      {/*  TODO * add below/}
-      {/* <Link to={`/profile/${profile.slug}`}>
-        <Card.Img src={profile.cover_photo} variant="top" />
-      </Link> */}
-
-      <Card.Body>
-        <Card.Title as="h4">
-          <strong>{profile.username}</strong>
-        </Card.Title>
-
-        <Card.Text as="p">
-          {profile.about_me.substring(0, 70)}...
-        </Card.Text>
-        <hr />
         <Row>
-          <Col className="d-flex justify-content-between">
+          <Col>
+            {/* TODO remove hardcoded value for */}
+            <img
+              src="http://localhost:8080/staticfiles/profile_default.svg"
+              alt="profile photo"
+            />
+            {/* TODO --  adjust spacing of picture and text columns */}
+            {/* TODO -- get photo working */}
+          </Col>
+          <Col>
+            <Card.Text as="p">
+              <strong>Name: </strong> {profile.first_name} {profile.last_name}{" "}
+            </Card.Text>
 
+            <Card.Text as="p">{profile.about_me.substring(0, 70)}...</Card.Text>
+            <Card.Text as="p">
+              <strong>Current Country: </strong> {profile.country}
+            </Card.Text>
+            <Card.Text as="p">
+              <strong>Joined on : </strong> {profile.date_joined}
+            </Card.Text>
+
+            {/* TODO: highlight listener on link with text popup to show icon is link or something similar */}
+            <Card.Text as="p">
+              <Link to={`/profile/${profile.id}`}> View Profile </Link>
+            </Card.Text>
           </Col>
         </Row>
-        <hr />
-        {/* <Link to={`/profile/${profile.slug}`}>
-          <Button variant="primary">Get More Info &gt; &gt;</Button>
-        </Link> */}
       </Card.Body>
     </Card>
+
+    // TODO -- add pagation links -- need to change payload first
   );
 };
 
