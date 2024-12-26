@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import ProfileCard from "../../components/ProfileCard";
 import Spinner from "../../components/Spinner";
 import Title from "../../components/Title";
 import { getProfiles, reset } from "../../features/profiles/profileSlice";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ProfilePublic from "../../type_interfaces/ProfilePublic";
 import { ReducerStatus } from "../../common/ReducerStatus";
 import { useSearchParams } from "react-router-dom";
 import { addParamToRoute, paramStrFromURL } from "../../common/utils";
-import { profile_paths } from "./ProfileRoutes";
+import { profile_routes } from "./ProfileRoutes";
 
 const ProfilesPage = () => {
   const { profiles, status, err_message, pagination } = useAppSelector(
@@ -55,10 +53,11 @@ const ProfilesPage = () => {
         ))}
         <p>
           {/* TODO - add num of results per page and other pagination options, separate to reusable component */}
+          {/* TODO - add search bar for all profiles */}
           {pagination?.previous && (
             <a
               href={addParamToRoute(
-                profile_paths.all_profiles_pg.path,
+                profile_routes.all_profiles_pg.path,
                 paramStrFromURL(pagination.previous)
               )}
             >
@@ -68,7 +67,7 @@ const ProfilesPage = () => {
           {pagination?.next && (
             <a
               href={addParamToRoute(
-                profile_paths.all_profiles_pg.path,
+                profile_routes.all_profiles_pg.path,
                 paramStrFromURL(pagination.next)
               )}
             >

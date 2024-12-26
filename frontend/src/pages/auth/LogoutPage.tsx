@@ -1,12 +1,7 @@
-import React, { useEffect } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
-
-import ProfileCard from "../../components/ProfileCard";
 import Spinner from "../../components/Spinner";
 import Title from "../../components/Title";
-
 import { logout, reset } from "../../features/auth/authSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { useNavigate } from "react-router-dom";

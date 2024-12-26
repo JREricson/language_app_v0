@@ -8,7 +8,7 @@ import { connect, ConnectedProps } from "react-redux";
 import ProfilePublic from "../type_interfaces/ProfilePublic";
 import { CountryCodes } from "validator/lib/isISO31661Alpha2";
 import { addParamToRoute } from "../common/utils";
-import { profile_paths } from "../pages/profiles/ProfileRoutes";
+import { profile_routes } from "../pages/profiles/ProfileRoutes";
 import moment from "moment";
 
 // const connector = connect(mapState, mapDispatch)
@@ -62,7 +62,7 @@ const ProfileCard = ({ profile }: ProfileProps) => {
             <Card.Text as="p">
               <Link
                 to={addParamToRoute(
-                  profile_paths.profile_pg.path,
+                  profile_routes.profile_pg.path,
                   profile.user_id
                 )}
               >

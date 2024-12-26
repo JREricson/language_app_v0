@@ -1,11 +1,8 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { FaUser } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import isEmail from "validator/lib/isEmail";
-
 import Spinner from "../../components/Spinner";
 import Title from "../../components/Title";
 import { login, reset } from "../../features/auth/authSlice";

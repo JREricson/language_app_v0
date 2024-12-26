@@ -19,7 +19,7 @@ import Form from "react-bootstrap/Form";
 
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
 import country_lookup from "country-code-lookup";
-import { profile_paths } from "./ProfileRoutes";
+import { profile_routes } from "./ProfileRoutes";
 
 import {
   LANGUAGES_CODES,
@@ -68,7 +68,7 @@ const ProfileEditPage = () => {
         }
       } else {
         toast.success("Your Profile has been updated.");
-        navigate(addParamToRoute(profile_paths.profile_pg.path, "user"));
+        navigate(addParamToRoute(profile_routes.profile_pg.path, "user"));
       }
     } catch (err) {
       if (err instanceof Error) {

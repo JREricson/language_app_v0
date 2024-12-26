@@ -27,7 +27,7 @@ import LogoutPage from "./pages/auth/LogoutPage";
 import UserOwnedRoute from "./components/UserOwnedRoute";
 import RefreshAuthOrRedirect from "./components/RefreshAuthOrRedirect";
 
-import { profile_paths } from "./pages/profiles/ProfileRoutes";
+import { profile_routes } from "./pages/profiles/ProfileRoutes";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
@@ -45,7 +45,7 @@ const App: FC = () => {
               {/* <Route path='/' element={<UserOwnedRoute page={<HomePage />} />} /> */}
               <Route path="/" element={<HomePage />} />
               {/* profile */}
-              {Object.values(profile_paths).map((route) => {
+              {Object.values(profile_routes).map((route) => {
                 console.log(route.path);
                 return (
                   <Route
