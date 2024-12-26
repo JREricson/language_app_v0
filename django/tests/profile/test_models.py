@@ -125,7 +125,10 @@ def test_user_cant_update_another_profile(api_client):
 @pytest.mark.django_db
 def test_list_all_profiles_api_view(api_client):
     ITEMS_TO_ADD = 30
-    for n in range(ITEMS_TO_ADD):
+    test_user = create_new_user(
+        username="test", email="test" + "j@j.com", password="1234BadPass!@#$"
+    )
+    for n in range(ITEMS_TO_ADD - 1):
         create_new_user(
             username=str(n), email=str(n) + "j@j.com", password="1234BadPass!@#$"
         )
@@ -134,9 +137,13 @@ def test_list_all_profiles_api_view(api_client):
 
     profile_url = reverse("all-profiles")
     response = api_client.get(profile_url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    api_client.force_authenticate(user=test_user)
+    response = api_client.get(profile_url)
     assert response.status_code == status.HTTP_200_OK
 
-    item_count = ListAllProfilesAPIView.pagination_class.page_size
+    item_count = ListAllProfilesAPIView.pagination_class.default_limit
 
     if ITEMS_TO_ADD > item_count:
         assert len(response.data["results"]) == item_count

@@ -1,20 +1,21 @@
 import axios from "axios";
 import { Headers } from "../../common/AxiosConfigUtil";
 import { headersFromStoredToken } from "../../common/AxiosConfigUtil";
+
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
-const getProfiles = async (query_str: string) => {
+const getProfileSingle = async (profile_id: string) => {
   const headers: Headers = headersFromStoredToken();
   const response = await axios.get(
-    `${REACT_APP_API_PATH}profile/all?${query_str}`,
+    `${REACT_APP_API_PATH}profile/${profile_id}/`,
     {
       headers,
     }
   );
-
-  return response;
+  console.log(response);
+  return response.data;
 };
 
-const profileAPIService = { getProfiles };
+const profileSingleAPIService = { getProfileSingle };
 
-export default profileAPIService;
+export default profileSingleAPIService;

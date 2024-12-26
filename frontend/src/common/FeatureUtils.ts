@@ -1,7 +1,7 @@
 import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
 import { isAxiosError } from "axios";
 
-export const errMsgBasedOnErrorTypeFromAxiosCall = (error: unknown): string => {
+export const errBasedOnAxiosCall = (error: unknown): string => {
   let msg: string = "";
   if (isAxiosError(error)) {
     msg += error.message;
@@ -28,7 +28,7 @@ export const attemptServiceRejectWithErr = async (
     }
   } catch (error: unknown) {
     console.log(`err generated on <${req}>`);
-    const errMsg: string = errMsgBasedOnErrorTypeFromAxiosCall(error);
+    const errMsg: string = errBasedOnAxiosCall(error);
     return thunkAPI.rejectWithValue(errMsg);
   }
 };

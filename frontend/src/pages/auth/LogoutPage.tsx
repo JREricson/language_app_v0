@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import Profile from "../../components/Profile";
+import ProfileCard from "../../components/ProfileCard";
 import Spinner from "../../components/Spinner";
 import Title from "../../components/Title";
 

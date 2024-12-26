@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 (
                     "about_me",
                     models.TextField(
-                        default="say something about yourself", verbose_name="About me"
+                        default="Left Blank", verbose_name="About me"
                     ),
                 ),
                 (

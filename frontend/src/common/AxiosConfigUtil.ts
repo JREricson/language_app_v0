@@ -1,4 +1,4 @@
-export const appJsonAxiosConfig = {
+export const requestConfig = {
   headers: {
     "Content-Type": "application/json",
   },
@@ -8,7 +8,7 @@ export interface Headers {
   [key: string]: string;
 }
 
-export function appJsonHeadersBasedOnTokenInLocStorage(): Headers {
+export function headersFromStoredToken(): Headers {
   /**
    * header has "Content-Type": "application/json"
    * If a jwt_access token is present in local storage it will be added to the header
@@ -17,10 +17,10 @@ export function appJsonHeadersBasedOnTokenInLocStorage(): Headers {
    */
   const accessToken: string | null = localStorage.getItem("jwt_access");
   if (accessToken !== null) {
-    let headers: Headers = appJsonAxiosConfig.headers;
+    const headers: Headers = requestConfig.headers;
     headers["Authorization"] = `Bearer ${accessToken}`;
     return headers;
   } else {
-    return appJsonAxiosConfig.headers;
+    return requestConfig.headers;
   }
 }

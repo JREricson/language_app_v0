@@ -1,4 +1,4 @@
-import Profile from "../../components/Profile";
+import ProfileCard from "../../components/ProfileCard";
 import ProfilePublic from "../../type_interfaces/ProfilePublic";
 
 // export interface PaginatedResult {
@@ -7,8 +7,6 @@ import ProfilePublic from "../../type_interfaces/ProfilePublic";
 //   previous: string;
 //   results: any[];
 // }
-
-
 
 export interface DjangoPagination {
   count: number;

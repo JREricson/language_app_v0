@@ -6,23 +6,19 @@ import { AsyncState } from "../../common/AsyncState";
 import { ReducerStatus } from "../../common/ReducerStatus";
 import { ProfilesResult } from "./interfaces/ProfilesResponse";
 import { DjangoPagination } from "../../common/interfaces/PaginatedResult";
-import { HttpStatusCode } from "axios";
 
-export interface ProfileState extends AsyncState {
-  profiles: ProfilePublic[];
-  pagination: DjangoPagination | null;
-  status_code: null | HttpStatusCode;
+export interface ProfileSingleState extends AsyncState {
+  profile: ProfilePublic | null;
 }
 
 const initialState = {
-  profiles: [] as ProfilePublic[],
+  profile: null,
   hasError: false,
   status: ReducerStatus.Idle,
   err_message: "",
-  pagination: null,
-  status_code: null,
+
   // TODO include error response?
-} satisfies ProfileState as ProfileState;
+} satisfies ProfileSingleState as ProfileSingleState;
 
 export const getProfiles = createAsyncThunk(
   "profiles/all",
@@ -40,12 +36,10 @@ export const profileSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      state.profiles = [];
+      state.profile = null;
       state.status = ReducerStatus.Idle;
       state.hasError = false;
       state.err_message = "";
-      state.pagination = null;
-      // state.status_code = ;
     },
   },
   extraReducers: (builder) => {
@@ -59,13 +53,14 @@ export const profileSlice = createSlice({
       })
       .addCase(getProfiles.fulfilled, (state, action: PayloadAction<any>) => {
         state.status = ReducerStatus.Success;
-        const { results, ...pagination } = action.payload.data.profiles;
-        state.profiles = action.payload.data.profiles
-          .results as ProfilePublic[];
-        state.pagination = pagination as DjangoPagination;
+        console.log(
+          `get profiles succeed <${JSON.stringify(action.payload.profiles)}>`
+        );
+        const { results, ...pagination } = action.payload.profiles;
+        state.profile = action.payload.profiles.results as ProfilePublic;
       })
       .addCase(getProfiles.rejected, (state, action: PayloadAction<any>) => {
-        console.log("get profiles rejected");
+        console.log("get profile rejected");
         state.status = ReducerStatus.Failed;
         state.hasError = true;
         state.err_message = action.payload as string;

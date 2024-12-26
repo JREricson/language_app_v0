@@ -38,17 +38,17 @@ class GetCurrentProfileAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# TODO - update schema description with  pagination
+# TODO - want to search by user name and not user__username
 @extend_schema_view(
     get=extend_schema(
         summary="Returns list of all profiles. ",
         description="""
-
+        
     Search fields include :"user__username", "user__first_name", "user__last_name", "country", "about_me".
 
     Ordering includes: "country", "native_language", "user__username", "user__first_name", "user__last_name", "id", "date_joined".
 
-    Example: /api/v0/profile/all?search=home&ordering=native_language,-country
+    Example: /api/v0/profile/all?search=home&?search=united&limit=10&ordering=-country&offset=10
     """,
         responses=ProfilePublicSerializer,
     )

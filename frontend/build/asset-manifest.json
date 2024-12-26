@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.980ca29e.css",
+    "main.js": "/static/js/main.2821c50d.js",
+    "static/media/place-holder-lilartsy.jpg": "/static/media/place-holder-lilartsy.207f0e7dff4d88a7505d.jpg",
+    "index.html": "/index.html",
+    "main.980ca29e.css.map": "/static/css/main.980ca29e.css.map",
+    "main.2821c50d.js.map": "/static/js/main.2821c50d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.980ca29e.css",
+    "static/js/main.2821c50d.js"
+  ]
+}

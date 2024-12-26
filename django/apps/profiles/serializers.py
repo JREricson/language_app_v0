@@ -9,9 +9,10 @@ class ProfilePublicSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
     date_joined = serializers.DateTimeField(source="user.date_joined")
+    user_id = serializers.CharField(source="user.id")
 
     # name_only gives county name instead of country code
-    country = CountryField(name_only=True)
+    country = CountryField()
 
     class Meta:
         model = Profile
@@ -25,6 +26,7 @@ class ProfilePublicSerializer(serializers.ModelSerializer):
             "about_me",
             "country",
             "native_language",
+            "user_id",
         ]
 
 
@@ -47,4 +49,5 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "about_me",
             "country",
             "native_language",
+            "user_id",
         ]

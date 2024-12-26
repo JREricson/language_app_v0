@@ -1,18 +1,15 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
-
-import { DecodedJwt } from "./interfaces/DecodedJwt";
 
 import { UserPublic } from "./interfaces/UserPublic";
 import { Jwt } from "./interfaces/Jwt";
 import { LoginCredentials } from "./interfaces/LoginCredentials";
 import { UserNew } from "./models/UserNew";
 import {
-  appJsonHeadersBasedOnTokenInLocStorage,
-  appJsonAxiosConfig as appJsonAxiosConfig,
+  headersFromStoredToken,
+  requestConfig as requestConfig,
 } from "../../common/AxiosConfigUtil";
 import { UserActivateRequest } from "./interfaces/UserActivateRequest";
-import { access } from "fs";
+
 import { LoginReturn } from "./interfaces/LoginReturn";
 import { Headers } from "../../common/AxiosConfigUtil";
 
@@ -23,7 +20,7 @@ const register = async (newUser: UserNew): Promise<UserPublic | null> => {
     //should return 201 --  created
     `${REACT_APP_API_PATH}auth/users/`,
     newUser,
-    appJsonAxiosConfig
+    requestConfig
   );
 
   return response.data;
@@ -35,13 +32,13 @@ const login = async (
   const login_resp = await axios.post(
     `${REACT_APP_API_PATH}auth/jwt/create/`,
     loginCredentials,
-    appJsonAxiosConfig
+    requestConfig
   );
 
   localStorage.setItem("jwt_access", login_resp.data.access);
   localStorage.setItem("jwt_refresh", login_resp.data.refresh);
 
-  const headers: Headers = appJsonHeadersBasedOnTokenInLocStorage();
+  const headers: Headers = headersFromStoredToken();
   const user_resp = await axios.get(`${REACT_APP_API_PATH}auth/users/me/`, {
     headers,
   });
@@ -51,7 +48,7 @@ const login = async (
     access: login_resp.data.access,
   };
   const user: UserPublic = user_resp.data;
-
+  localStorage.setItem("user_id", user.id.toString());
   return { jwt, user };
 };
 
@@ -79,7 +76,7 @@ const activate = async (
   await axios.post(
     `${REACT_APP_API_PATH}auth/users/activation/`,
     activateRequest,
-    appJsonAxiosConfig
+    requestConfig
   );
 
   //TODO --  check response - if {}, we good, if not, try to send proper error

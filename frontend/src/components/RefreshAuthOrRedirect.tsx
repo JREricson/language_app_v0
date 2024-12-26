@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Jwt } from "../features/auth/interfaces/Jwt";
 import { logout } from "../features/auth/authSlice";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { appJsonAxiosConfig } from "../common/AxiosConfigUtil";
+import { requestConfig } from "../common/AxiosConfigUtil";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { StatusCodes } from "http-status-codes";
 
 const RefreshAuthOrRedirect = () => {
@@ -32,7 +31,7 @@ const RefreshAuthOrRedirect = () => {
           const response = await axios.post(
             `${REACT_APP_API_PATH}auth/jwt/refresh/`,
             { refresh: refresh_token },
-            appJsonAxiosConfig
+            requestConfig
           );
 
           if (response.status === StatusCodes.OK) {

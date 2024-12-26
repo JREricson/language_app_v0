@@ -6,12 +6,10 @@ import { AsyncState } from "../../common/AsyncState";
 import { ReducerStatus } from "../../common/ReducerStatus";
 import { ProfilesResult } from "./interfaces/ProfilesResponse";
 import { DjangoPagination } from "../../common/interfaces/PaginatedResult";
-import { HttpStatusCode } from "axios";
 
 export interface ProfileState extends AsyncState {
   profiles: ProfilePublic[];
   pagination: DjangoPagination | null;
-  status_code: null | HttpStatusCode;
 }
 
 const initialState = {
@@ -20,13 +18,12 @@ const initialState = {
   status: ReducerStatus.Idle,
   err_message: "",
   pagination: null,
-  status_code: null,
-  // TODO include error response?
 } satisfies ProfileState as ProfileState;
 
 export const getProfiles = createAsyncThunk(
   "profiles/all",
   async (query_str: string, thunkAPI): Promise<ProfilesResult> => {
+    // Todo -- should this be in a try catch block
     return await attemptServiceRejectWithErr(
       profileAPIService.getProfiles,
       query_str,
@@ -45,7 +42,6 @@ export const profileSlice = createSlice({
       state.hasError = false;
       state.err_message = "";
       state.pagination = null;
-      // state.status_code = ;
     },
   },
   extraReducers: (builder) => {
@@ -59,9 +55,11 @@ export const profileSlice = createSlice({
       })
       .addCase(getProfiles.fulfilled, (state, action: PayloadAction<any>) => {
         state.status = ReducerStatus.Success;
-        const { results, ...pagination } = action.payload.data.profiles;
-        state.profiles = action.payload.data.profiles
-          .results as ProfilePublic[];
+        console.log(
+          `get profiles succeed <${JSON.stringify(action.payload.profiles)}>`
+        );
+        const { results, ...pagination } = action.payload.profiles;
+        state.profiles = action.payload.profiles.results as ProfilePublic[];
         state.pagination = pagination as DjangoPagination;
       })
       .addCase(getProfiles.rejected, (state, action: PayloadAction<any>) => {

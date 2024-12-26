@@ -17,7 +17,7 @@ import EmailResetPage from "./pages/auth/EmailResetPage";
 
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { getProfiles } from "./features/profiles/profileSlice";
-import Profile from "./components/Profile";
+import ProfileCard from "./components/ProfileCard";
 import ProfilesPage from "./pages/profiles/ProfilesPage";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./components/NotFound";
@@ -26,6 +26,8 @@ import LoginPage from "./pages/auth/LoginPage";
 import LogoutPage from "./pages/auth/LogoutPage";
 import UserOwnedRoute from "./components/UserOwnedRoute";
 import RefreshAuthOrRedirect from "./components/RefreshAuthOrRedirect";
+
+import { profile_paths } from "./pages/profiles/ProfileRoutes";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
@@ -42,7 +44,18 @@ const App: FC = () => {
             <Routes>
               {/* <Route path='/' element={<UserOwnedRoute page={<HomePage />} />} /> */}
               <Route path="/" element={<HomePage />} />
-              <Route path="/profile/all" element={<ProfilesPage />} />
+              {/* profile */}
+              {Object.values(profile_paths).map((route) => {
+                console.log(route.path);
+                return (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<route.component />}
+                  />
+                );
+              })}
+
               {/* auth */}
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />

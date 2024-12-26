@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./app/store";
 import App from "./App";
 import "./index.css";
+import "./css/site.css";
 import { PersistGate } from "redux-persist/integration/react";
 
 const container = document.getElementById("root")!;

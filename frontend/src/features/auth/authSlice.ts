@@ -8,7 +8,7 @@ import { RootState } from "../../app/store";
 import { RegisterFormField } from "./interfaces/RegisterFormField";
 import {
   attemptServiceRejectWithErr,
-  errMsgBasedOnErrorTypeFromAxiosCall,
+  errBasedOnAxiosCall,
 } from "../../common/FeatureUtils";
 import { LoginCredentials } from "./interfaces/LoginCredentials";
 
@@ -25,7 +25,7 @@ const storedJwt: string | null = !!localStorage.getItem("jwt")
   : null;
 const jwt: Jwt | null = !!storedJwt ? JSON.parse(storedJwt) : null;
 
-// TODO: move higher
+// TODO: move  Auth state outside of file
 
 interface AuthState extends AsyncState {
   user: UserPublic | null;
@@ -66,6 +66,7 @@ export const logout = createAsyncThunk("auth/logout", async (thunkAPI) => {
   // return attemptServiceRejectWithErr(authService.logout, null, null);
   localStorage.removeItem("jwt_refresh");
   localStorage.removeItem("jwt_access");
+  localStorage.removeItem("user_id");
   try {
     const res = authService.logout();
     console.log(`result of blacklist <${res}>`);
@@ -81,7 +82,7 @@ export const activate = createAsyncThunk(
     try {
       return await authService.activate(user);
     } catch (error: unknown) {
-      const msg: string = errMsgBasedOnErrorTypeFromAxiosCall(error);
+      const msg: string = errBasedOnAxiosCall(error);
 
       return thunkAPI.rejectWithValue(msg);
     }
@@ -176,7 +177,7 @@ export const { reset } = authSlice.actions;
 
 export const selectedUser = (state: RootState) => {
   //TODO delete???
-  return state.auth;
+  return state.auth.user;
 };
 
 export default authSlice.reducer;
