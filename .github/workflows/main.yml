@@ -94,7 +94,7 @@ jobs:
       - name: make migrations
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py makemigrations
-      - name: <igrate
+      - name: migrate
         run: |
           docker-compose -f docker-compose.ci.yml exec -T django_be python3 manage.py migrate
        
