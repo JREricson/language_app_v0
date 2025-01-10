@@ -70,5 +70,25 @@ use uncontrolled value in favor of controlled values except where seen as benefi
 
 ### Boiler Plate code
 much of the boiler plate for this project comes form the following sources
-
 Most of the basic structure for the Django backend is taken from here
+
+
+
+
+### Translations through dictionary files 
+
+### Translations through API
+
+### Dictionary through API
+
+Dictionary definitions come from wiktionary's api. As this is a public endpoint, and there is no desire to hide the logic, the API is called out from the client side to reduce load on the server and for faster response times.
+
+The English Wiktionary Documentation is linked below. The language code is given in the bottom level domain. 
+
+[https://en.wiktionary.org/api/rest_v1/#/Page%20content/get_page_definition__term_](https://en.wiktionary.org/api/rest_v1/#/Page%20content/get_page_definition__term_)
+
+
+This is very limited outside of the English language. Other API are fairly limited for the free tier, but can easily be added is this ever becomes more than a hobby project. 
+
+
+
