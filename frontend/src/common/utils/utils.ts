@@ -81,3 +81,10 @@ export function paramStrFromURL(url: string): string {
   const url_obj: URL = new URL(url);
   return url_obj.search;
 }
+
+export function extractContent(html: string) {
+  // function taken from here
+  //https://stackoverflow.com/questions/28899298/extract-the-text-out-of-html-string-using-javascript
+  return new DOMParser().parseFromString(html, "text/html").documentElement
+    .textContent;
+}

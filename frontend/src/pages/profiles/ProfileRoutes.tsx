@@ -1,7 +1,6 @@
 import ProfilesPage from "./ProfilesPage";
 import ProfilePage from "./ProfilePage";
 import ProfileEditPage from "./ProfileEditPage";
-import { Component } from "react";
 
 const BASE: string = "/profile";
 

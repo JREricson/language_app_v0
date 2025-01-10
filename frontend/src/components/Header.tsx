@@ -7,7 +7,7 @@ import { GiBrain } from "react-icons/gi";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useAppSelector } from "../app/hooks";
 import { profile_routes } from "../pages/profiles/ProfileRoutes";
-import { addParamToRoute } from "../common/utils";
+import { addParamToRoute } from "../common/utils/utils";
 
 const Header = () => {
   const { isAuthenticated } = useAppSelector(

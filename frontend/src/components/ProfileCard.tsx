@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import ProfilePublic from "../type_interfaces/ProfilePublic";
 import { CountryCodes } from "validator/lib/isISO31661Alpha2";
-import { addParamToRoute } from "../common/utils";
+import { addParamToRoute } from "../common/utils/utils";
 import { profile_routes } from "../pages/profiles/ProfileRoutes";
 import moment from "moment";
 

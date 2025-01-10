@@ -11,7 +11,7 @@ import ProfilePublic from "../../type_interfaces/ProfilePublic";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
-import { fetchOptionsWithStoredToken } from "../../common/utils";
+import { fetchOptionsWithStoredToken } from "../../common/utils/utils";
 import country_lookup from "country-code-lookup";
 
 import { LANGUAGES_CODES_KV } from "../../external/api/languages-recognized";

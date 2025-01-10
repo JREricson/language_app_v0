@@ -1,10 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -15,10 +10,6 @@ import ResetPasswordConfirmPage from "./pages/auth/ResetPasswordConfirmPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import EmailResetPage from "./pages/auth/EmailResetPage";
 
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { getProfiles } from "./features/profiles/profileSlice";
-import ProfileCard from "./components/ProfileCard";
-import ProfilesPage from "./pages/profiles/ProfilesPage";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./components/NotFound";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -28,12 +19,23 @@ import UserOwnedRoute from "./components/UserOwnedRoute";
 import RefreshAuthOrRedirect from "./components/RefreshAuthOrRedirect";
 
 import { profile_routes } from "./pages/profiles/ProfileRoutes";
+import { translate_routes } from "./pages/translate/translateRoutes";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
+
+function addRoutes(routes: object) {
+  return Object.values(routes).map((route) => {
+    console.log(route.path);
+    return (
+      <Route key={route.path} path={route.path} element={<route.component />} />
+    );
+  });
+}
 
 const App: FC = () => {
   return (
     <div className="App">
+      {/* TODO - make app name a global value, find all other occurrences */}
       <h1>LanguaVersity</h1>
 
       <>
@@ -44,19 +46,11 @@ const App: FC = () => {
             <Routes>
               {/* <Route path='/' element={<UserOwnedRoute page={<HomePage />} />} /> */}
               <Route path="/" element={<HomePage />} />
-              {/* profile */}
-              {Object.values(profile_routes).map((route) => {
-                console.log(route.path);
-                return (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={<route.component />}
-                  />
-                );
-              })}
+              {addRoutes(profile_routes)}
+              {addRoutes(translate_routes)}
 
               {/* auth */}
+              {/* TODO create auth routes */}
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/logout" element={<LogoutPage />} />

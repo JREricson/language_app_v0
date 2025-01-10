@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ProfilePublic from "../../type_interfaces/ProfilePublic";
 import { ReducerStatus } from "../../common/ReducerStatus";
 import { useSearchParams } from "react-router-dom";
-import { addParamToRoute, paramStrFromURL } from "../../common/utils";
+import { addParamToRoute, paramStrFromURL } from "../../common/utils/utils";
 import { profile_routes } from "./ProfileRoutes";
 
 const ProfilesPage = () => {

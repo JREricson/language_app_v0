@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import { StatusCodes } from "http-status-codes";
 
@@ -12,10 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   addParamToRoute,
   fetchOptionsWithStoredToken,
-} from "../../common/utils";
+} from "../../common/utils/utils";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+
 
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
 import country_lookup from "country-code-lookup";
@@ -30,11 +31,12 @@ import moment from "moment";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
+// TODO - get rid of the global
 let profile_global: ProfilePrivate | null = null; // Todo -> probably do not need this anymore
 let lang_detail: string[] | undefined = undefined;
 const ProfileEditPage = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<ProfilePrivate | null>(null);
+  const [profile, setProfile] = useState<ProfilePrivate | null>(null); // TODO - should this be const. it this why I need the global
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -81,9 +83,9 @@ const ProfileEditPage = () => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(event.target);
     let payload: object = {};
-    setIsLoading(true);
 
     // creating payload based on input
     if (profile?.about_me !== formData.get("about_me")) {
@@ -249,6 +251,7 @@ const ProfileEditPage = () => {
           <Form.Control
             name="about_me"
             as="textarea"
+            // Todo -- enforce max length on these based on table lengths
             defaultValue={profile.about_me}
             placeholder={`${profile.about_me}`}
           />
