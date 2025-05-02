@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-
 import { toast } from "react-toastify";
-
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Title";
-
-import ProfilePublic from "../../type_interfaces/ProfilePublic";
-
+import Spinner from "../../components/reuseable/Spinner";
+import Title from "../../components/reuseable/Title";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
 import { fetchOptionsWithStoredToken } from "../../common/utils/utils";
 import country_lookup from "country-code-lookup";
-
 import { LANGUAGES_CODES_KV } from "../../external/api/languages-recognized";
 import moment from "moment";
+import { WEBSITE_NAME } from "../../common/global_app_constants";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
-// Todo -- try to remove global variables her and in edit profile
+// Todo -- try to remove global variables here and in edit profile
 let lang_detail: string[] | null = null;
 let profile_global: null | ProfilePrivate = null;
 const ProfilePage = () => {
@@ -97,7 +91,7 @@ const ProfilePage = () => {
 
   return (
     <div className="centered-content">
-      <Title title="LanguaVersity user profiles" />
+      <Title title={`${WEBSITE_NAME} user profiles`} />
 
       <Row>
         <Col className=" col-12 col-md-4">

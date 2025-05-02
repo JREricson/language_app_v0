@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import ProfileCard from "../../components/ProfileCard";
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Title";
+import Spinner from "../../components/reuseable/Spinner";
+import Title from "../../components/reuseable/Title";
 import { getProfiles, reset } from "../../features/profiles/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ProfilePublic from "../../type_interfaces/ProfilePublic";
@@ -11,6 +11,7 @@ import { ReducerStatus } from "../../common/ReducerStatus";
 import { useSearchParams } from "react-router-dom";
 import { addParamToRoute, paramStrFromURL } from "../../common/utils/utils";
 import { profile_routes } from "./ProfileRoutes";
+import { WEBSITE_NAME } from "../../common/global_app_constants";
 
 const ProfilesPage = () => {
   const { profiles, status, err_message, pagination } = useAppSelector(
@@ -35,7 +36,7 @@ const ProfilesPage = () => {
   return (
     <>
       <div className="centered-content">
-        <Title title="LanguaVersity user profiles" />
+        <Title title={`${WEBSITE_NAME} user profiles`} />
         <h1>Profile Search</h1>
         <h1>User Profiles</h1>
         <hr key={key_ndx} className="hr-text" />

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { Jwt } from "../features/auth/interfaces/Jwt";
-import { logout } from "../features/auth/authSlice";
+import { Jwt } from "../../features/auth/interfaces/Jwt";
+import { logout } from "../../features/auth/authSlice";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { requestConfig } from "../common/AxiosConfigUtil";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { requestConfig } from "../../common/AxiosConfigUtil";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { StatusCodes } from "http-status-codes";

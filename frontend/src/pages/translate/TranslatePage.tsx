@@ -3,8 +3,8 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 
 import { toast } from "react-toastify";
 
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Title";
+import Spinner from "../../components/reuseable/Spinner";
+import Title from "../../components/reuseable/Title";
 
 import ProfilePublic from "../../type_interfaces/ProfilePublic";
 

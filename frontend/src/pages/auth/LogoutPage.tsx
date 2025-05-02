@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Title";
+import Spinner from "../../components/reuseable/Spinner";
+import Title from "../../components/reuseable/Title";
 import { logout, reset } from "../../features/auth/authSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { useNavigate } from "react-router-dom";
+import { WEBSITE_NAME } from "../../common/global_app_constants";
 
 const LogoutPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const LogoutPage = () => {
 
   return (
     <>
-      <Title title="LanguaVersity" />
+      <Title title={WEBSITE_NAME} />
       <Spinner />
       <h1>You are being Logged out</h1>
     </>

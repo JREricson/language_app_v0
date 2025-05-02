@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import { StatusCodes } from "http-status-codes";
-
 import { toast } from "react-toastify";
-
-import Spinner from "../../components/Spinner";
-import Title from "../../components/Title";
-
+import Spinner from "../../components/reuseable/Spinner";
+import Title from "../../components/reuseable/Title";
 import { useNavigate, useParams } from "react-router-dom";
-
 import {
   addParamToRoute,
   fetchOptionsWithStoredToken,
@@ -16,7 +12,6 @@ import {
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
 
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
 import country_lookup from "country-code-lookup";
@@ -28,6 +23,7 @@ import {
   LANGUAGES_NAMES,
 } from "../../external/api/languages-recognized";
 import moment from "moment";
+import { WEBSITE_NAME } from "../../common/global_app_constants";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
@@ -162,23 +158,21 @@ const ProfileEditPage = () => {
     return <Spinner />;
   }
   if (errorMsg) {
-    // TODO -- this should give toast error
-
-    return <div>Error: {errorMsg}</div>;
+    return <div>Problem loading page...</div>;
   }
 
   if (!profile) {
-    // TODO -- this should give toast error
-    return <div>Problem with request</div>;
+    return <div>Problem loading page...</div>;
   }
 
   return (
     <div className="centered-content">
-      <Title title="LanguaVersity user profiles" />
+      <Title title={`${WEBSITE_NAME} user profiles`} />
       <br />
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col className="col-md-4 center-inside   ">
+            {/* TODO - have this load the correct profile image */}
             <img
               className="profile-thumb"
               src="http://localhost:8080/staticfiles/profile_default.svg"

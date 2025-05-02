@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 // import { verifyJwt } from '../authSlice';
 
 import jwt_decode from "jwt-decode";
@@ -16,6 +16,7 @@ const UserOwnedRoute = ({
   let userOwnsContent: boolean = false;
   const dispatch = useAppDispatch();
 
+  // TODO - use below or delete it
   // useEffect(() => {
   //   if (!jwt || !jwt?.access) {
   //     return;

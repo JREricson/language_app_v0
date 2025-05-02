@@ -1,10 +1,10 @@
-import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import Title from "../../components/Title";
+import Title from "../../components/reuseable/Title";
+import { WEBSITE_NAME } from "../../common/global_app_constants";
 const PropertiesPage = () => {
   return (
     <>
-      <Title title="Learn more about LanguaVersity" />
+      <Title title={`Learn more about ${WEBSITE_NAME}`} />
       <Container>
         <Row>
           <Col className="mg-top">
