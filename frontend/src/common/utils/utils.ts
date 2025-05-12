@@ -65,8 +65,6 @@ export function fetchOptionsWithStoredToken() {
       },
     };
 
-    console.log("headers are");
-    console.log(options.headers);
     return options;
   } else {
     return default_options;
@@ -87,4 +85,10 @@ export function extractContent(html: string) {
   //https://stackoverflow.com/questions/28899298/extract-the-text-out-of-html-string-using-javascript
   return new DOMParser().parseFromString(html, "text/html").documentElement
     .textContent;
+}
+
+export function roundToN(num: number, dec_places: number) {
+  return (
+    Math.round((num + Number.EPSILON) * 10 ** dec_places) / 10 ** dec_places
+  );
 }

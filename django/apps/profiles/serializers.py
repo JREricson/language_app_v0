@@ -11,7 +11,6 @@ class ProfilePublicSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(source="user.date_joined")
     user_id = serializers.CharField(source="user.id")
 
-    # name_only gives county name instead of country code
     country = CountryField()
 
     class Meta:

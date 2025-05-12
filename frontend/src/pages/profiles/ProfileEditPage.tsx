@@ -40,8 +40,12 @@ const ProfileEditPage = () => {
   const sorted_langs = LANGUAGES_NAMES;
 
   const callUpdateProfile = async (payload: object) => {
-    let options = fetchOptionsWithStoredToken();
-    options = { ...options, method: "PATCH", body: JSON.stringify(payload) };
+    let fetch_options = fetchOptionsWithStoredToken();
+    fetch_options = {
+      ...fetch_options,
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    };
     const user_id = localStorage.getItem("user_id");
 
     if (!user_id) {
@@ -55,7 +59,7 @@ const ProfileEditPage = () => {
 
     try {
       const profile_data_endpoint: string = `${REACT_APP_API_PATH}profile/${user_id}/`;
-      const res = await fetch(profile_data_endpoint, options);
+      const res = await fetch(profile_data_endpoint, fetch_options);
       const data = await res.json();
       if (!res.ok) {
         toast.error("Problem updating profile");

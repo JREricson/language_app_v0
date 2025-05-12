@@ -12,12 +12,14 @@ import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./components/reuseable/NotFound";
 import RefreshAuthOrRedirect from "./components/site_auth/RefreshAuthOrRedirect";
 import { profile_routes } from "./pages/profiles/ProfileRoutes";
-import { translate_routes } from "./pages/translate/translateRoutes";
+import { translate_routes } from "./pages/translate/extractRoutes";
 import { site_routes } from "./pages/info/SiteRoutes";
 import { public_auth_routes } from "./pages/auth/PublicAuthRoutes";
 import { WEBSITE_NAME } from "./common/global_app_constants";
-const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
+import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
+import "primereact/resources/primereact.min.css"; //core css
 
+const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 function addRoutes(routes: object) {
   return Object.values(routes).map((route) => {
     console.log(route.path);

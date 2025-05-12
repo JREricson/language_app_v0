@@ -12,8 +12,14 @@
 ### Database: Postgres
 **Why chosen?:** I wanted practice with relational data bases and was most familiar with Postgres.
 
+
+
+
 ### SwaggerAPI 
 **Why chosen?:** Easy documentation. End points can be extracted for use in Insomnia by importing .yaml file. Type safety introduced with **openapi-fetch**.
+
+
+
 
 
 
@@ -72,6 +78,8 @@ use uncontrolled value in favor of controlled values except where seen as benefi
 much of the boiler plate for this project comes form the following sources
 Most of the basic structure for the Django backend is taken from here
 
+### database choices
+- uuids for ids, prevent scraping attacks
 
 
 

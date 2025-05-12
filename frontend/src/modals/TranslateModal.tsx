@@ -8,6 +8,7 @@ import React from "react";
 
 import { GOOGLE_LANG_OBJ } from "../common/types/lang_codes";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
 interface TranslateModalProps {
@@ -77,7 +78,7 @@ export const TranslateModal: React.FC<TranslateModalProps> = ({
 
     try {
       if (!response.ok) {
-        console.log("fail to get resource");
+        toast.error("--<Problem Translating>--");
       }
       const data_json = await response.json();
 
@@ -130,7 +131,7 @@ export const TranslateModal: React.FC<TranslateModalProps> = ({
     }
   };
 
-  let items: DropDownFormItem[] = [];
+  const items: DropDownFormItem[] = [];
   GOOGLE_LANG_OBJ.forEach((entry) => {
     const code = Object.keys(entry)[0];
     const { en_name, native_lang } = entry[code];

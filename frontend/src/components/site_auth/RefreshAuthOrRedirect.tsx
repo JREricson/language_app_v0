@@ -21,8 +21,6 @@ const RefreshAuthOrRedirect = () => {
   useEffect(() => {
     const refreshTokens = async () => {
       if (localStorage.getItem("jwt_refresh")) {
-        // const parsed_jwt: Jwt = JSON.parse(localStorage.jwt);
-        // const refresh_token: string = parsed_jwt.refresh;
         const refresh_token: string | null =
           localStorage.getItem("jwt_refresh");
         console.log(refresh_token);
@@ -57,7 +55,7 @@ const RefreshAuthOrRedirect = () => {
       }
     };
     //TODO - make sure set to value less than jwt expiration time
-    const second = 1000; //milliseconds
+    const second = 1000 * 5 * 60; //milliseconds // todo - have inherit from a global file like .env, do same for settings.py, where one is always larger than the other
 
     // refreshTokens();
     //TODO -  perform initial check based on expiration

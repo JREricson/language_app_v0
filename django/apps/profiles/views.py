@@ -5,11 +5,11 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.exceptions import NotFound, NotAuthenticated
 from django.core.exceptions import ValidationError
 
 from ..common.shared_properties import CustomPagination, DefaultPagination
-from .exceptions import InvalidCredentialsForProfileException, ProfileNotFoundException
+
 from .models import Profile
 from .renderers import ProfileJSONRenderer, ProfilesJSONRenderer
 from .serializers import (
@@ -101,7 +101,7 @@ class ProfileAPIView(APIView):
         cur_user_id = request.user.id
 
         if str(cur_user_id) != user_id:
-            raise InvalidCredentialsForProfileException
+            raise NotAuthenticated
 
         data = request.data
 
@@ -131,10 +131,11 @@ def raise_exceptions_based_on_invalid_id(user_id):
     try:
         Profile.objects.get(user__id=user_id)
     except Profile.DoesNotExist:
-        raise ProfileNotFoundException
+        raise NotFound("Profile not found.")
     except ValidationError:
         # End user does not need to know it is a validation error
-        raise ProfileNotFoundException
+        raise NotFound("Profile not found.")
     except Exception as e:
         logger.warning(f"Unknown exception occurred<{e}> type <{type(e)}>.")
-        raise ProfileNotFoundException
+        # Not found is not the correct exception, but do not want to give these details to the user.
+        raise NotFound("Profile not found.")

@@ -12,6 +12,8 @@ urlpatterns = [
     path("api/v0/auth/", include("djoser.urls")),
     path("api/v0/auth/", include("djoser.urls.jwt")),
     path("api/v0/profile/", include("apps.profiles.urls")),
+    path("api/v0/words/", include("apps.words.urls")),
+    path("api/v0/dict/", include("apps.dictionary.urls")),
     # swagger
     path("api/v0/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

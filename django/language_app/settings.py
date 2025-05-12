@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.profiles",
     "apps.words",
+    "apps.dictionary",
 ]
 
 SITE_ID = 1
