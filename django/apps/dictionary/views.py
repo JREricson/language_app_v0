@@ -20,8 +20,8 @@ from .serializers import (
     ManyDictItemRequestSerializer,
 )
 from .models import DictDetail
-from ..words.models import WordDetail
-from ..words.serializers import WordDetailSerializer
+from ..words.models import WordStat
+from ..words.serializers import WordStatSerializer
 
 
 class GetManyDictDetailsAPIView(APIView):
@@ -40,11 +40,6 @@ class GetManyDictDetailsAPIView(APIView):
         serializer = ManyDictItemRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        dict_details = DictDetail.objects.filter(
-            source_lang_code=source_lang_code,
-            trans_lang_code=trans_lang_code,
-            word__in=words,
-        )
         words = request.data.get("words", [])
 
         res = {}
@@ -54,7 +49,7 @@ class GetManyDictDetailsAPIView(APIView):
                 source_lang_code=source_lang_code,
                 trans_lang_code=trans_lang_code,
             )
-            word_stats = WordDetail.objects.filter(
+            word_stats = WordStat.objects.filter(
                 word=word, lang_code=source_lang_code
             ).first()
 

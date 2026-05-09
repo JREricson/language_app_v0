@@ -5,7 +5,7 @@ import Spinner from "../../components/reuseable/Spinner";
 import Title from "../../components/reuseable/Title";
 import { useNavigate, useParams } from "react-router-dom";
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
-import { fetchOptionsWithStoredToken } from "../../common/utils/utils";
+import { createFetchOptionsWithStoredToken } from "../../common/utils/utils";
 import country_lookup from "country-code-lookup";
 import { LANGUAGES_CODES_KV } from "../../external/api/languages-recognized";
 import moment from "moment";
@@ -27,7 +27,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const options = fetchOptionsWithStoredToken();
+      const options = createFetchOptionsWithStoredToken();
       try {
         let res = null;
 

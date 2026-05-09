@@ -1,6 +1,8 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { WordListItem } from "./ExtractDataTable";
+import { Button } from "react-bootstrap";
+import { useEffect } from "react";
 
 export interface Definition {
   pos: string;
@@ -9,6 +11,14 @@ export interface Definition {
 }
 
 export default function ExpandedWordDataTableRow(word_query: WordListItem) {
+
+
+  function add_defn(){
+    word_query.definitions.push({"definition": "test",
+      "gender": "get",
+      "pos": "none"});
+  }
+
   return (
     <div className="p-3">
       <DataTable value={word_query.definitions}>
@@ -31,6 +41,8 @@ export default function ExpandedWordDataTableRow(word_query: WordListItem) {
           sortable
         ></Column>
       </DataTable>
+      <Button onClick={add_defn}>Add Definition</Button>
+
     </div>
   );
 }

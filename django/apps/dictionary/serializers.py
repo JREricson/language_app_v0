@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import DictDetail
-from ..words.models import WordDetail
-from ..words.serializers import WordDetailSerializer
+from ..words.models import WordStat
+from ..words.serializers import WordStatSerializer
 
 
 class DictDetailSerializer(serializers.ModelSerializer):
@@ -41,15 +41,15 @@ class ReferenceDictDetailSerializer(serializers.ModelSerializer):
 
 
 class ManyDictItemRequestSerializer(serializers.Serializer):
-    source_lang_code = serializers.CharField(max_length=8)
-    trans_lang_code = serializers.CharField(max_length=8)
+    source_lang_code = serializers.CharField(max_length=7)
+    trans_lang_code = serializers.CharField(max_length=7)
     words = serializers.ListField(child=serializers.CharField(max_length=100))
     do_include_stats = serializers.BooleanField(default=False)
 
 
 class WordEntrySerializer(serializers.Serializer):
     definitions = DictDetailSerializer(many=True)
-    source_word_stats = WordDetailSerializer(allow_null=True)
+    source_word_stats = WordStatSerializer(allow_null=True)
 
 
 class DictionaryResponseSerializer(serializers.Serializer):

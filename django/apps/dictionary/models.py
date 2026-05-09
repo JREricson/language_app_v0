@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 
 
-
 class DictDetail(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -25,7 +24,7 @@ class DictDetail(models.Model):
         choices=LANGUAGES,
         blank=False,
         null=True,
-        max_length=8,
+        max_length=7,
     )
 
     trans_lang_code = models.CharField(
@@ -33,14 +32,14 @@ class DictDetail(models.Model):
         choices=LANGUAGES,
         blank=False,
         null=True,
-        max_length=8,
+        max_length=7,
     )
 
     gender = models.CharField(
         verbose_name=_("Gender"),
         blank=False,
         null=True,
-        max_length=50,  # may change
+        max_length=50,  
     )
 
     pos = models.CharField(

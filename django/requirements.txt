@@ -3,7 +3,7 @@ argh==0.28.1
 async-timeout==4.0.2
 black==23.3.0
 celery==5.2.7
-Django==4.2.1
+Django==5.2.14
 django-autoslug==1.9.9
 django-celery-email==3.0.0
 django-countries==7.5.1

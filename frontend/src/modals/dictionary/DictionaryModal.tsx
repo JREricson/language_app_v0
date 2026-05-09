@@ -52,7 +52,9 @@ export const DictionaryModal: React.FC<DictModalProps> = ({
       const data_json = await response.json();
       setResData(data_json);
     } catch (error: unknown) {
-      toast.error("A problem occurred while trying to make your request.");
+      toast.error(
+        "A problem occurred while trying to make your request. A common cause is no internet access."
+      );
     }
   };
   useEffect(() => {

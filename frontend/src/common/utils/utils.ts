@@ -49,7 +49,7 @@ export interface Headers {
   [key: string]: string;
 }
 
-export function fetchOptionsWithStoredToken() {
+export function createFetchOptionsWithStoredToken() {
   /**
    * header has "Content-Type": "application/json"
    * If a jwt_access token is present in local storage it will be added to the header

@@ -7,7 +7,7 @@ import Title from "../../components/reuseable/Title";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addParamToRoute,
-  fetchOptionsWithStoredToken,
+  createFetchOptionsWithStoredToken,
 } from "../../common/utils/utils";
 
 import Button from "react-bootstrap/Button";
@@ -40,7 +40,7 @@ const ProfileEditPage = () => {
   const sorted_langs = LANGUAGES_NAMES;
 
   const callUpdateProfile = async (payload: object) => {
-    let fetch_options = fetchOptionsWithStoredToken();
+    let fetch_options = createFetchOptionsWithStoredToken();
     fetch_options = {
       ...fetch_options,
       method: "PATCH",
@@ -121,7 +121,7 @@ const ProfileEditPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const options = fetchOptionsWithStoredToken();
+      const options = createFetchOptionsWithStoredToken();
 
       try {
         const profile_data_endpoint: string = `${REACT_APP_API_PATH}profile/current_user/`;

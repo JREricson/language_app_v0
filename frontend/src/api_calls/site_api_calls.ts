@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { fetchOptionsWithStoredToken } from "../common/utils/utils";
+import { createFetchOptionsWithStoredToken } from "../common/utils/utils";
 
 const REACT_APP_API_PATH: string | undefined = process.env.REACT_APP_API_PATH;
 
@@ -16,7 +16,7 @@ export async function call_bilingual_dict_api(
     words: [word],
   };
 
-  let fetch_options = fetchOptionsWithStoredToken();
+  let fetch_options = createFetchOptionsWithStoredToken();
   fetch_options = {
     ...fetch_options,
     method: "POST",

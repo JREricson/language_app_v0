@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useRef } from "react";
 import { Button, Card } from "react-bootstrap";
 import {
   DataTable,
@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import ProfilePrivate from "../../type_interfaces/ProfilePrivate";
 import {
-  fetchOptionsWithStoredToken,
+  createFetchOptionsWithStoredToken,
   roundToN,
 } from "../../common/utils/utils";
 import Form from "react-bootstrap/Form";
@@ -99,8 +99,8 @@ const ExtractPage = () => {
     return output_str;
   }
 
-  async function callBiLingDictAPI(payload: object): Promise<any> {
-    let fetch_options = fetchOptionsWithStoredToken();
+  async function callBilingualDictAPI(payload: object): Promise<any> {
+    let fetch_options = createFetchOptionsWithStoredToken();
     fetch_options = {
       ...fetch_options,
       method: "POST",
@@ -109,14 +109,16 @@ const ExtractPage = () => {
 
     try {
       const word_detail_end_point: any = `${REACT_APP_API_PATH}dict/many`;
-      const res = await fetch(word_detail_end_point, fetch_options); // need to define an interface
+      const res = await fetch(word_detail_end_point, fetch_options); // todo ??? need to define an interface
 
       if (!res.ok) {
         if (res.status == StatusCodes.UNAUTHORIZED) {
           navigate("/login");
         } else {
           // TODO - how to best handle for good user experience
-          toast.error("Problem obtaining data");
+          const err_msg =
+            "Problem obtaining resources. This is common when there is no internet access.";
+          toast.error(err_msg);
 
           return [];
         }
@@ -132,7 +134,49 @@ const ExtractPage = () => {
         console.log(err.message);
       } else {
         toast.error("error");
-        setErrorMsg("An error occurred");
+        setErrorMsg("An error collecting some of the needed information.");
+      }
+    }
+  }
+
+  async function callGetUserWordDetailsAPI(payload: object): Promise<any> {
+    // have type for payload???
+    // TODO - break this func and the bilingual one into abstracted apis
+    let fetch_options = createFetchOptionsWithStoredToken();
+    fetch_options = {
+      ...fetch_options,
+      method: "POST",
+      body: JSON.stringify(payload),
+    };
+
+    try {
+      const user_word_detail_end_point: any = `${REACT_APP_API_PATH}words/user_word_details`;
+      const res = await fetch(user_word_detail_end_point, fetch_options); // todo ??? need to define an interface
+
+      if (!res.ok) {
+        if (res.status == StatusCodes.UNAUTHORIZED) {
+          navigate("/login");
+        } else {
+          // TODO - how to best handle for good user experience
+          const err_msg =
+            "Problem obtaining resources. This is common when there is no internet access.";
+          toast.error(err_msg);
+
+          return [];
+        }
+      } else {
+        const data = await res.json();
+        return data;
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        //todo handle this properly
+        setErrorMsg(err.message);
+        toast.error(err.message);
+        console.log(err.message);
+      } else {
+        toast.error("error");
+        setErrorMsg("An error collecting some of the needed information.");
       }
     }
   }
@@ -141,566 +185,39 @@ const ExtractPage = () => {
 
   //////////////////
   // auth
-  let [profile, setProfile] = useState<ProfilePrivate | null>(null);
   const { user_id } = useParams<string>();
   //app
   const navigate = useNavigate();
-  // data
+  // React state variables
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [input_text, setInputText] = useState<string>("");
   const [translated_text, setTranslatedText] = useState<null | string>(null);
   const [word_list_details, setWordListDetails] = useState<WordListItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const top_500 = new Set([
-    "de",
-    "que",
-    "no",
-    "a",
-    "la",
-    "el",
-    "y",
-    "es",
-    "en",
-    "lo",
-    "un",
-    "por",
-    "qué",
-    "me",
-    "una",
-    "los",
-    "se",
-    "te",
-    "con",
-    "para",
-    "está",
-    "mi",
-    "pero",
-    "sí",
-    "si",
-    "bien",
-    "eso",
-    "su",
-    "las",
-    "yo",
-    "del",
-    "como",
-    "aquí",
-    "tu",
-    "al",
-    "más",
-    "le",
-    "esto",
-    "todo",
-    "ya",
-    "estoy",
-    "ahora",
-    "muy",
-    "ha",
-    "esta",
-    "así",
-    "vamos",
-    "algo",
-    "hay",
-    "bueno",
-    "tengo",
-    "él",
-    "cuando",
-    "estás",
-    "sé",
-    "tú",
-    "nos",
-    "nada",
-    "cómo",
-    "este",
-    "o",
-    "he",
-    "ser",
-    "tiene",
-    "puedo",
-    "ella",
-    "quiero",
-    "hacer",
-    "fue",
-    "gracias",
-    "vez",
-    "era",
-    "soy",
-    "sólo",
-    "todos",
-    "porque",
-    "son",
-    "tienes",
-    "creo",
-    "voy",
-    "sabes",
-    "estaba",
-    "puede",
-    "eres",
-    "ese",
-    "usted",
-    "entonces",
-    "hola",
-    "solo",
-    "verdad",
-    "casa",
-    "tan",
-    "quién",
-    "sus",
-    "tiempo",
-    "dos",
-    "esa",
-    "nunca",
-    "dónde",
-    "va",
-    "oh",
-    "favor",
-    "mucho",
-    "mí",
-    "quieres",
-    "siento",
-    "señor",
-    "mejor",
-    "hace",
-    "has",
-    "decir",
-    "también",
-    "sobre",
-    "dios",
-    "sin",
-    "tenemos",
-    "están",
-    "ti",
-    "puedes",
-    "ver",
-    "hombre",
-    "vida",
-    "alguien",
-    "cosas",
-    "siempre",
-    "hasta",
-    "ahí",
-    "ir",
-    "años",
-    "antes",
-    "estar",
-    "ni",
-    "poco",
-    "día",
-    "uno",
-    "noche",
-    "hecho",
-    "mis",
-    "estamos",
-    "otra",
-    "acuerdo",
-    "trabajo",
-    "nosotros",
-    "parece",
-    "gente",
-    "sea",
-    "padre",
-    "mira",
-    "mismo",
-    "dijo",
-    "nadie",
-    "quiere",
-    "podría",
-    "hablar",
-    "vas",
-    "ellos",
-    "sr.",
-    "tal",
-    "pasa",
-    "fuera",
-    "después",
-    "han",
-    "desde",
-    "dinero",
-    "mundo",
-    "claro",
-    "momento",
-    "les",
-    "tener",
-    "estado",
-    "otro",
-    "había",
-    "mañana",
-    "tenía",
-    "madre",
-    "vale",
-    "lugar",
-    "haciendo",
-    "donde",
-    "seguro",
-    "sabe",
-    "podemos",
-    "tus",
-    "espera",
-    "nuevo",
-    "sido",
-    "cosa",
-    "hijo",
-    "allí",
-    "menos",
-    "tipo",
-    "amigo",
-    "gran",
-    "nuestro",
-    "mujer",
-    "mamá",
-    "luego",
-    "papá",
-    "días",
-    "dice",
-    "hoy",
-    "tres",
-    "buena",
-    "necesito",
-    "dije",
-    "oye",
-    "gusta",
-    "quería",
-    "será",
-    "haber",
-    "parte",
-    "todas",
-    "crees",
-    "buen",
-    "conmigo",
-    "nombre",
-    "mierda",
-    "nuestra",
-    "mal",
-    "debe",
-    "realmente",
-    "estas",
-    "aún",
-    "mío",
-    "toda",
-    "hacerlo",
-    "cada",
-    "visto",
-    "importa",
-    "contigo",
-    "tienen",
-    "hemos",
-    "razón",
-    "alguna",
-    "tanto",
-    "saber",
-    "hizo",
-    "veces",
-    "serio",
-    "ven",
-    "idea",
-    "eh",
-    "tarde",
-    "problema",
-    "hora",
-    "cierto",
-    "dicho",
-    "quien",
-    "demasiado",
-    "amor",
-    "entre",
-    "ve",
-    "pasado",
-    "familia",
-    "estos",
-    "policía",
-    "debería",
-    "ustedes",
-    "chica",
-    "esos",
-    "chicos",
-    "cuenta",
-    "haces",
-    "todavía",
-    "salir",
-    "algún",
-    "vaya",
-    "unos",
-    "veo",
-    "amigos",
-    "hermano",
-    "pensé",
-    "sabía",
-    "cabeza",
-    "ah",
-    "cariño",
-    "digo",
-    "van",
-    "hombres",
-    "buenas",
-    "somos",
-    "cualquier",
-    "forma",
-    "mientras",
-    "lado",
-    "debo",
-    "sería",
-    "caso",
-    "pueden",
-    "pasó",
-    "primera",
-    "genial",
-    "chico",
-    "supuesto",
-    "hice",
-    "pues",
-    "adiós",
-    "muchas",
-    "personas",
-    "señora",
-    "volver",
-    "esas",
-    "quizá",
-    "contra",
-    "camino",
-    "durante",
-    "hablando",
-    "manera",
-    "muerto",
-    "persona",
-    "rápido",
-    "cuál",
-    "ayuda",
-    "historia",
-    "iba",
-    "supongo",
-    "nueva",
-    "entiendo",
-    "dentro",
-    "casi",
-    "puerta",
-    "ves",
-    "pasar",
-    "primero",
-    "significa",
-    "semana",
-    "hacia",
-    "quizás",
-    "espero",
-    "juntos",
-    "año",
-    "niños",
-    "pronto",
-    "tío",
-    "suerte",
-    "ciudad",
-    "siquiera",
-    "feliz",
-    "venir",
-    "hija",
-    "gustaría",
-    "minutos",
-    "cuánto",
-    "os",
-    "hey",
-    "muerte",
-    "dejar",
-    "realidad",
-    "deja",
-    "problemas",
-    "vi",
-    "da",
-    "importante",
-    "dijiste",
-    "corazón",
-    "miedo",
-    "jefe",
-    "agua",
-    "haré",
-    "justo",
-    "horas",
-    "poder",
-    "buenos",
-    "esposa",
-    "manos",
-    "debes",
-    "viene",
-    "venga",
-    "nuestros",
-    "ojos",
-    "adelante",
-    "encontrar",
-    "mano",
-    "cinco",
-    "niño",
-    "ninguna",
-    "otros",
-    "cara",
-    "cuidado",
-    "bajo",
-    "cerca",
-    "viejo",
-    "déjame",
-    "noches",
-    "bastante",
-    "fin",
-    "tomar",
-    "único",
-    "misma",
-    "escucha",
-    "ningún",
-    "suficiente",
-    "punto",
-    "cuándo",
-    "sigue",
-    "haya",
-    "equipo",
-    "grande",
-    "necesita",
-    "llegar",
-    "incluso",
-    "algunos",
-    "doctor",
-    "difícil",
-    "aunque",
-    "hubiera",
-    "primer",
-    "coche",
-    "hago",
-    "clase",
-    "cuatro",
-    "mas",
-    "dices",
-    "pequeño",
-    "llama",
-    "toma",
-    "hiciste",
-    "allá",
-    "última",
-    "arriba",
-    "tierra",
-    "guerra",
-    "pensar",
-    "pueda",
-    "igual",
-    "loco",
-    "sangre",
-    "mujeres",
-    "vuelta",
-    "fui",
-    "trabajar",
-    "tenido",
-    "juego",
-    "deberías",
-    "cuerpo",
-    "e",
-    "algunas",
-    "entrar",
-    "cree",
-    "podía",
-    "debemos",
-    "oportunidad",
-    "teléfono",
-    "necesitamos",
-    "final",
-    "listo",
-    "fiesta",
-    "muchos",
-    "estabas",
-    "quieren",
-    "vete",
-    "auto",
-    "dar",
-    "vivir",
-    "posible",
-    "ok",
-    "hermana",
-    "número",
-    "meses",
-    "exactamente",
-    "culpa",
-    "abajo",
-    "escuela",
-    "ido",
-    "fuerte",
-    "diciendo",
-    "habla",
-    "esté",
-    "ello",
-    "pregunta",
-    "chicas",
-    "eran",
-    "unas",
-    "pasando",
-    "atrás",
-    "malo",
-    "capitán",
-    "sra.",
-    "bebé",
-    "segundo",
-    "sabemos",
-    "mayor",
-    "comida",
-    "morir",
-    "conozco",
-    "dame",
-    "fácil",
-    "comer",
-    "vino",
-    "lista",
-    "haga",
-    "necesitas",
-    "hijos",
-    "probablemente",
-    "padres",
-    "habitación",
-    "creer",
-    "pensando",
-    "fueron",
-    "dime",
-  ]);
 
-  const user_lists: Map<string, Set<string>> = new Map<string, Set<string>>([
-    ["top_500", top_500],
-  ]);
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+  // todo  - get user lists
+  const user_lists: Map<string, Set<string>> = new Map<string, Set<string>>([]);
 
   // used for selecting from datatable
   ///////////////////////////////////
-  const [selectedProducts, setSelectedProducts] = useState<
-    WordListItem[] | null
-  >(null);
-  const [rowClick, setRowClick] = useState<boolean>(true);
+  // const dt = useRef<DataTable>(null); <= todo get working
+  // const exportCSV = (selectionOnly: unknown) => {  # <= todo get working
+  //   dt.current.exportCSV({ selectionOnly });
+  // };
 
-  enum SizeOption {
-    SMALL = "small",
-    NORMAL = "normal",
-    LARGE = "large",
-  }
-
-  const [sizeOptions] = useState<SizeOption[]>([
-    SizeOption.SMALL,
-    SizeOption.NORMAL,
-    SizeOption.LARGE,
-  ]);
-
-  let s_lang = "en";
-  let o_lang = "en";
-  const s_lang_loc_store = localStorage.getItem("extract_s_lang");
-  if (s_lang_loc_store != null) {
-    s_lang = s_lang_loc_store;
-  }
-  const o_lang_loc_store = localStorage.getItem("extract_o_lang");
-  if (o_lang_loc_store != null) {
-    o_lang = o_lang_loc_store;
-  }
+  // collecting saved state from local storage
+  let is_user_owned: boolean =
+    user_id === "user" || user_id == localStorage.getItem("user_id");
+  let { s_lang, o_lang } = getLanguagesFromSavedState();
 
   const [source_lang, setSourceLang] = useState<string>(s_lang);
   const [output_lang, setOutputLang] = useState<string>(o_lang);
 
   ///////////////////////
-
-  let is_user_owned: boolean =
-    user_id === "user" || user_id == localStorage.getItem("user_id");
-
-  useEffect(() => {
-    // keeps casing, capital letter may be different than expected in certain languages, best to just to a case insensitive search
-
-    setIsLoading(false);
-  }, []);
 
   function handleSetInputLang(event: React.ChangeEvent<HTMLSelectElement>) {
     setSourceLang(event.target.value);
@@ -712,7 +229,7 @@ const ExtractPage = () => {
     localStorage.setItem("extract_o_lang", event.target.value);
   }
 
-  function processSingleWordTransResp(res: string[]): string[] {
+  function processSingleWordGoogleTransResp(res: string[]): string[] {
     // should contain an array with a single value
     // know the line numbers
 
@@ -729,27 +246,18 @@ const ExtractPage = () => {
     }
   }
 
-  const handleTranslateSingleWordInClient = async (event: FormEvent) => {
-    event.preventDefault();
-
-    const { word_map, tot_count } = extractWordCounts(input_text);
-
-    let word_list = Array.from(word_map.keys());
-
-    if (word_list.length === 1 && word_list[0] === "") {
-      word_list = [];
-    }
-
+  async function translateIndividualWords(word_list: string[]) {
     const translate_payload: string = create_trans_payload(word_list);
-    const g_translate_api_url = `https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=${source_lang}&tl=${output_lang}&q=${encodeURIComponent(
+    const G_TRANSLATE_URL = `https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=${source_lang}&tl=${output_lang}&q=${encodeURIComponent(
       translate_payload
     )}`;
 
-    const response = await fetch(g_translate_api_url);
-    const err_msg = "--<Problem obtaining resources>--";
+    const err_msg =
+      "Problem obtaining resources. This is common when there is no internet access.";
 
     let trans_word_list: string[] = [];
     try {
+      const response = await fetch(G_TRANSLATE_URL);
       if (!response.ok) {
         // TODO - Make sure that this is handles further down the pipeline
         toast.error(err_msg);
@@ -757,33 +265,61 @@ const ExtractPage = () => {
       const data_json = await response.json();
 
       // todo => this looks ugly for user, handle differently
-      trans_word_list = processSingleWordTransResp(data_json);
-
-      // setTransList(trans_word_list);
-      // setTransResJson(data_json);
+      trans_word_list = processSingleWordGoogleTransResp(data_json);
     } catch (error: unknown) {
       toast.error(err_msg);
     }
+    return trans_word_list;
+  }
 
-    const payload = {
-      source_lang_code: source_lang,
+  const handleTranslateIndividualWords = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const { word_map, tot_count } = extractWordCounts(input_text);
+    let word_list = Array.from(word_map.keys());
+    if (word_list.length === 1 && word_list[0] === "") {
+      word_list = [];
+    }
+    let trans_word_list: string[] = await translateIndividualWords(word_list);
+    const user_detail_payload = {
+      source_lang: source_lang,
+      trans_lang: o_lang,
       words: word_list,
-      trans_lang_code: o_lang,
       do_include_stats: true,
+      do_include_dates: true,
     };
+    const user_word_details_obj = await callGetUserWordDetailsAPI(
+      user_detail_payload
+    );
+     console.log("word_list"); // todo delete this
 
-    const word_detail_obj = await callBiLingDictAPI(payload);
-
-    let new_word_list_items = [];
+    console.log(word_list); // todo delete this
+    let updated_word_list_items = [];
     const lemma_counts = new Map<string, number>();
     let tot_lemma_count = 0;
     for (let i = 0; i < word_list.length; i++) {
-      // containing in wordlist is 0(n) opp want o(1)
-      const word_set = new Set(Object.keys(word_detail_obj));
+      const word = word_list[i];
+
+
+
+
+      
+      const word_res_obj = user_word_details_obj[word];
+      console.log("user_word_details_obj"); // TODO -- delete this
+      console.log(user_word_details_obj); // TODO -- delete this
+      console.log("word"); // TODO -- delete this      
+      console.log(word); // TODO -- delete this
+      console.log("word_res_obj"); // TODO -- delete this
+      console.log(word_res_obj); // TODO -- delete this
+      if (word_res_obj == undefined) {
+        // skipping words that are not in user_word_details
+        continue;
+      }
+      const word_set = new Set(Object.keys(user_word_details_obj));
       let lemma: string = "No guess";
       let orig_prct_in_corpus = 0.0;
       let lemma_prct_in_corpus = 0.0;
-      const word = word_list[i];
+
       const str_count = word_map.get(word)?.count;
       let orig_prct_in_str = 0.0;
 
@@ -794,9 +330,9 @@ const ExtractPage = () => {
 
       if (
         word_set.has(word) &&
-        word_detail_obj[word]["source_word_stats"] != undefined
+        user_word_details_obj[word]["source_word_stats"] != undefined
       ) {
-        lemma = word_detail_obj[word]["source_word_stats"]["lemma"];
+        lemma = user_word_details_obj[word]["source_word_stats"]["lemma"];
 
         if (lemma != undefined) {
           const lemma_count = lemma_counts.get(lemma);
@@ -811,37 +347,42 @@ const ExtractPage = () => {
         }
 
         orig_prct_in_corpus = roundToN(
-          parseFloat(word_detail_obj[word]["source_word_stats"]["word_prct"]),
+          parseFloat(
+            user_word_details_obj[word]["source_word_stats"]["word_prct"]
+          ),
           3
         );
 
         lemma_prct_in_corpus = roundToN(
-          parseFloat(word_detail_obj[word]["source_word_stats"]["lemma_prct"]),
+          parseFloat(
+            user_word_details_obj[word]["source_word_stats"]["lemma_prct"]
+          ),
           3 // todo , doe the 3 do anything -> remove?
         );
       }
       const definitions: Definition[] = [];
-      if (
-        word_set.has(word) &&
-        // want to include the null values
-        word_detail_obj[word]["definitions"] !== undefined
-      ) {
-        // const new_def_obj: Definition[];
-        // console.log(
-        //   "we got" + JSON.stringify(word_detail_obj[word]["definitions"])
-        // );
-        word_detail_obj[word]["definitions"].forEach((def_obj: any) => {
-          const gender = def_obj["gender"];
-          const pos = def_obj["pos"];
-          const definition = def_obj["translation"];
-          const new_def: Definition = {
-            gender,
-            pos,
-            definition,
-          };
-          definitions.push(new_def);
-        });
-      }
+      // if (
+      //   word_set.has(word) &&
+      //   // want to include the null values
+      //   user_word_details_obj[word]["definitions"] !== undefined
+      // ) {
+      //   // const new_def_obj: Definition[];
+      //   // console.log(
+      //   //   "we got" + JSON.stringify(word_detail_obj[word]["definitions"])
+      //   // );
+      //   user_word_details_obj[word]["definitions"].forEach((def_obj: any) => {
+      //     const gender = def_obj["gender"];
+      //     const pos = def_obj["pos"];
+      //     const definition = def_obj["translation"];
+      //     const new_def: Definition = {
+      //       gender,
+      //       pos,
+      //       definition,
+      //     };
+      //     definitions.push(new_def);
+      //   });
+      // }
+
       let detail: WordListItem = {
         id: i,
         orig: word_list[i],
@@ -854,9 +395,9 @@ const ExtractPage = () => {
         definitions,
       };
 
-      new_word_list_items.push(detail);
+      updated_word_list_items.push(detail);
     }
-    new_word_list_items.forEach((det) => {
+    updated_word_list_items.forEach((det) => {
       if (det["lemma"] != undefined) {
         const lem_count = lemma_counts.get(det["lemma"]);
         if (lem_count != undefined) {
@@ -865,7 +406,8 @@ const ExtractPage = () => {
         }
       }
     });
-    setWordListDetails(new_word_list_items);
+ 
+    setWordListDetails(updated_word_list_items);
   };
 
   const items: DropDownFormItem[] = [];
@@ -897,16 +439,16 @@ const ExtractPage = () => {
     { field: "orig", header: "Original" },
     { field: "trans", header: "Quick translation" },
     { field: "orig_count", header: "Orig. word count" },
-    { field: "pos", header: "Part of speech guess" },
+    // { field: "pos", header: "Part of speech guess" },
     { field: "lemma", header: "Lemma guess" },
-    { field: "lemma_trans", header: "Lemma translation" },
+    // { field: "lemma_trans", header: "Lemma translation" },
     { field: "lemma_count_in_str", header: "Lemma count in orig." },
     { field: "orig_prct_in_str", header: "Word % in orig" },
     { field: "lemma_prct_in_str", header: "Lemma % in orig." },
     { field: "orig_prct_in_corpus", header: "Word % in corpus" },
     { field: "lemma_prct_in_corpus", header: "Lemma % in corpus." },
     { field: "user_lists", header: "Lists" },
-    { field: "user_understanding", header: "Understanding category" },
+    // { field: "user_understanding", header: "Understanding category" },
     { field: "user_conj_understanding", header: "Conj. understanding" },
   ];
 
@@ -928,6 +470,11 @@ const ExtractPage = () => {
 
     setVisibleColumns(orderedSelectedColumns);
   };
+  const [delete_me, set_del_met] = useState<Definition>({
+    definition: "test",
+    gender: "get",
+    pos: "none",
+  });
 
   const exclude_lists = (
     <Card>
@@ -1014,9 +561,99 @@ const ExtractPage = () => {
     null
   );
 
+  interface ExpandedWordDataTableRowExtensionProps {
+    word_detail: WordListItem;
+  }
+
+  function ExpandedWordDataTableRowExtension({
+    word_detail,
+  }: ExpandedWordDataTableRowExtensionProps) {
+    const DeleteDefinitionBtn = () => {
+      return <Button>Delete</Button>;
+    };
+
+    function add_defn() {
+      set_del_met({
+        definition: "bll ",
+        gender: "monkey",
+        pos: "none",
+      });
+    }
+
+    return (
+      <div className="p-3">
+        <Card>Your translations</Card>
+        <DataTable
+          value={[
+            {
+              definition: "bubbles ",
+              gender: "monkey",
+              pos: "none",
+            },
+          ]}
+        >
+          <Column
+            headerStyle={{ width: "4rem" }}
+            body={DeleteDefinitionBtn}
+          ></Column>
+
+          <Column
+            field="definition"
+            header="Translation"
+            style={{ width: "20%" }}
+            sortable
+          ></Column>
+          <Column
+            field="gender"
+            header="Gender"
+            style={{ width: "20%" }}
+            sortable
+          ></Column>
+          <Column
+            field="pos"
+            header="Part of Speech"
+            style={{ width: "60%" }}
+            sortable
+          ></Column>
+        </DataTable>
+        <p>{word_detail.orig}</p>
+        <p> {JSON.stringify(delete_me)}</p>
+        <Button onClick={add_defn}>Add Definition</Button>{" "}
+      </div>
+    );
+  }
+
+  function ExpandedWordDataTableRow2(word_query: WordListItem) {
+    return (
+      <div className="p-3">
+        <DataTable value={word_query.definitions}>
+          <Column
+            field="definition"
+            header="Translation"
+            style={{ width: "20%" }}
+            sortable
+          ></Column>
+          <Column
+            field="gender"
+            header="Gender"
+            style={{ width: "20%" }}
+            sortable
+          ></Column>
+          <Column
+            field="pos"
+            header="Part of Speech"
+            style={{ width: "60%" }}
+            sortable
+          ></Column>
+        </DataTable>
+        <ExpandedWordDataTableRowExtension word_detail={word_query} />
+      </div>
+    );
+  }
+
   return (
     <div className="centered-content">
-      <Form onSubmit={handleTranslateSingleWordInClient}>
+      <Form onSubmit={handleTranslateIndividualWords}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>The text in the field below will translated.</Form.Label>
           <Form.Control
@@ -1060,6 +697,11 @@ const ExtractPage = () => {
           <br />
           {include_lists}
           {col_section}
+          {/* <Button          <======================================  TODO get working
+              type="button"
+              onClick={() => exportCSV(false)}
+              data-pr-tooltip="CSV"
+            /> */}
           <DataTable
             stripedRows
             showGridlines
@@ -1086,7 +728,7 @@ const ExtractPage = () => {
             onRowToggle={(e) => {
               setExpandedRows(e.data);
             }}
-            rowExpansionTemplate={ExpandedWordDataTableRow} // Todo -> get working
+            rowExpansionTemplate={ExpandedWordDataTableRow2} // Todo -> get working
             // loading={loading} // <= todo get working
           >
             <Column expander style={{ width: "5rem" }} />
@@ -1129,3 +771,161 @@ const ExtractPage = () => {
 };
 
 export default ExtractPage;
+
+function getLanguagesFromSavedState() {
+  let s_lang = "en";
+  let o_lang = "en";
+  const s_lang_loc_store = localStorage.getItem("extract_s_lang");
+  if (s_lang_loc_store != null) {
+    s_lang = s_lang_loc_store;
+  }
+  const o_lang_loc_store = localStorage.getItem("extract_o_lang");
+  if (o_lang_loc_store != null) {
+    o_lang = o_lang_loc_store;
+  }
+  return { s_lang, o_lang };
+}
+// const handleTranslateIndividualWords = async (event: FormEvent) => {
+//   event.preventDefault();
+//   const { word_map, tot_count } = extractWordCounts(input_text);
+//   let word_list = Array.from(word_map.keys());
+//   if (word_list.length === 1 && word_list[0] === "") {
+//     word_list = [];
+//   }
+
+//   const translate_payload: string = create_trans_payload(word_list);
+//   const g_translate_api_url = `https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=${source_lang}&tl=${output_lang}&q=${encodeURIComponent(
+//     translate_payload
+//   )}`;
+
+//   const err_msg =
+//     "Problem obtaining resources. This is common when there is no internet access.";
+
+//   let trans_word_list: string[] = [];
+//   try {
+//     const response = await fetch(g_translate_api_url);
+//     if (!response.ok) {
+//       // TODO - Make sure that this is handles further down the pipeline
+//       toast.error(err_msg);
+//     }
+//     const data_json = await response.json();
+
+//     // todo => this looks ugly for user, handle differently
+//     trans_word_list = processSingleWordTransResp(data_json);
+//   } catch (error: unknown) {
+//     toast.error(err_msg);
+//   }
+
+//   const payload = {
+//     source_lang_code: source_lang,
+//     words: word_list,
+//     trans_lang_code: o_lang,
+//     do_include_stats: true,
+//   };
+
+//   const user_detail_payload = {
+//     source_lang: source_lang,
+//     trans_lang: o_lang,
+//     words: word_list,
+//     do_include_stats: true,
+//     do_include_dates: true,
+//   };
+
+//   const word_detail_obj = await callBilingualDictAPI(payload);
+//   const user_word_detail_obj = await callGetUserWordDetailsAPI(
+//     user_detail_payload
+//   );
+
+//   let new_word_list_items = [];
+//   const lemma_counts = new Map<string, number>();
+//   let tot_lemma_count = 0;
+//   for (let i = 0; i < word_list.length; i++) {
+//     // containing in wordlist is 0(n) opp want o(1)
+//     const word_set = new Set(Object.keys(word_detail_obj));
+//     let lemma: string = "No guess";
+//     let orig_prct_in_corpus = 0.0;
+//     let lemma_prct_in_corpus = 0.0;
+//     const word = word_list[i];
+//     const str_count = word_map.get(word)?.count;
+//     let orig_prct_in_str = 0.0;
+
+//     if (str_count != undefined) {
+//       orig_prct_in_str = roundToN(str_count / tot_count, 3);
+//     } else {
+//     }
+
+//     if (
+//       word_set.has(word) &&
+//       word_detail_obj[word]["source_word_stats"] != undefined
+//     ) {
+//       lemma = word_detail_obj[word]["source_word_stats"]["lemma"];
+
+//       if (lemma != undefined) {
+//         const lemma_count = lemma_counts.get(lemma);
+//         if (lemma_count != undefined) {
+//           lemma_counts.set(lemma, lemma_count + 1);
+//         } else {
+//           lemma_counts.set(lemma, 1);
+//           tot_lemma_count++;
+//         }
+//       } else {
+//         tot_lemma_count++;
+//       }
+
+//       orig_prct_in_corpus = roundToN(
+//         parseFloat(word_detail_obj[word]["source_word_stats"]["word_prct"]),
+//         3
+//       );
+
+//       lemma_prct_in_corpus = roundToN(
+//         parseFloat(word_detail_obj[word]["source_word_stats"]["lemma_prct"]),
+//         3 // todo , doe the 3 do anything -> remove?
+//       );
+//     }
+//     const definitions: Definition[] = [];
+//     if (
+//       word_set.has(word) &&
+//       // want to include the null values
+//       word_detail_obj[word]["definitions"] !== undefined
+//     ) {
+//       // const new_def_obj: Definition[];
+//       // console.log(
+//       //   "we got" + JSON.stringify(word_detail_obj[word]["definitions"])
+//       // );
+//       word_detail_obj[word]["definitions"].forEach((def_obj: any) => {
+//         const gender = def_obj["gender"];
+//         const pos = def_obj["pos"];
+//         const definition = def_obj["translation"];
+//         const new_def: Definition = {
+//           gender,
+//           pos,
+//           definition,
+//         };
+//         definitions.push(new_def);
+//       });
+//     }
+//     let detail: WordListItem = {
+//       id: i,
+//       orig: word_list[i],
+//       trans: trans_word_list[i],
+//       orig_count: word_map.get(word_list[i])?.count,
+//       lemma,
+//       orig_prct_in_corpus,
+//       lemma_prct_in_corpus,
+//       orig_prct_in_str,
+//       definitions,
+//     };
+
+//     new_word_list_items.push(detail);
+//   }
+//   new_word_list_items.forEach((det) => {
+//     if (det["lemma"] != undefined) {
+//       const lem_count = lemma_counts.get(det["lemma"]);
+//       if (lem_count != undefined) {
+//         det["lemma_count_in_str"] = lem_count;
+//         det["lemma_prct_in_str"] = (lem_count / tot_lemma_count) * 100;
+//       }
+//     }
+//   });
+//   setWordListDetails(new_word_list_items);
+// };
